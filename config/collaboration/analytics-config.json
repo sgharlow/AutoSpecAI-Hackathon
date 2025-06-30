@@ -1,0 +1,166 @@
+{
+  "start_date": "2024-01-01",
+  "end_date": "2024-01-31",
+  "report_type": "comprehensive",
+  "metrics": {
+    "collaboration_sessions": {
+      "include": true,
+      "breakdown_by": ["user", "document", "day", "hour"],
+      "include_duration_analysis": true,
+      "include_concurrent_users": true
+    },
+    "comments_and_annotations": {
+      "include": true,
+      "breakdown_by": ["user", "document", "thread", "type"],
+      "include_resolution_metrics": true,
+      "include_response_times": true
+    },
+    "document_versions": {
+      "include": true,
+      "breakdown_by": ["user", "document", "change_type"],
+      "include_version_frequency": true,
+      "include_change_volume": true
+    },
+    "approval_workflows": {
+      "include": true,
+      "breakdown_by": ["workflow_type", "organization", "approver"],
+      "include_completion_times": true,
+      "include_approval_rates": true
+    },
+    "user_engagement": {
+      "include": true,
+      "breakdown_by": ["user", "department", "role"],
+      "include_activity_patterns": true,
+      "include_feature_usage": true
+    },
+    "real_time_collaboration": {
+      "include": true,
+      "breakdown_by": ["document", "session_type"],
+      "include_websocket_metrics": true,
+      "include_presence_tracking": true
+    }
+  },
+  "filters": {
+    "organizations": [],
+    "users": [],
+    "documents": [],
+    "document_types": ["requirements", "specifications", "design"],
+    "workflow_types": ["approval", "review", "feedback"],
+    "include_auto_saves": false,
+    "include_system_users": false,
+    "min_session_duration": 60,
+    "exclude_test_data": true
+  },
+  "aggregations": {
+    "time_intervals": ["hourly", "daily", "weekly"],
+    "percentiles": [50, 75, 90, 95, 99],
+    "rolling_averages": [7, 14, 30],
+    "trend_analysis": true,
+    "comparative_analysis": {
+      "compare_to_previous_period": true,
+      "period_offset": 30,
+      "include_growth_rates": true
+    }
+  },
+  "output_format": {
+    "format": "json",
+    "include_charts": true,
+    "chart_types": ["line", "bar", "pie", "heatmap"],
+    "include_raw_data": false,
+    "include_executive_summary": true,
+    "include_recommendations": true
+  },
+  "advanced_analytics": {
+    "user_behavior_analysis": {
+      "include": true,
+      "session_patterns": true,
+      "collaboration_patterns": true,
+      "productivity_metrics": true
+    },
+    "document_hotspots": {
+      "include": true,
+      "most_commented_sections": true,
+      "highest_revision_areas": true,
+      "collaboration_intensity": true
+    },
+    "team_dynamics": {
+      "include": true,
+      "collaboration_networks": true,
+      "communication_patterns": true,
+      "cross_team_interactions": true
+    },
+    "workflow_optimization": {
+      "include": true,
+      "bottleneck_analysis": true,
+      "approval_efficiency": true,
+      "process_improvement_suggestions": true
+    }
+  },
+  "alerting": {
+    "performance_thresholds": {
+      "session_response_time": 2000,
+      "comment_load_time": 1000,
+      "version_creation_time": 5000,
+      "workflow_completion_time": 259200
+    },
+    "usage_anomalies": {
+      "detect_unusual_patterns": true,
+      "spike_detection": true,
+      "inactivity_alerts": true
+    },
+    "quality_metrics": {
+      "comment_resolution_rate_threshold": 0.8,
+      "workflow_approval_rate_threshold": 0.9,
+      "user_satisfaction_threshold": 4.0
+    }
+  },
+  "export_options": {
+    "formats": ["json", "csv", "pdf", "excel"],
+    "delivery_methods": ["download", "email", "s3_upload", "api_endpoint"],
+    "schedule": {
+      "enabled": false,
+      "frequency": "weekly",
+      "day_of_week": "monday",
+      "time": "09:00",
+      "timezone": "UTC"
+    },
+    "recipients": [
+      "analytics@acme.com",
+      "product-team@acme.com",
+      "engineering-leads@acme.com"
+    ]
+  },
+  "privacy_settings": {
+    "anonymize_user_data": false,
+    "exclude_personal_content": true,
+    "data_retention_days": 90,
+    "comply_with_gdpr": true,
+    "include_consent_status": true
+  },
+  "customization": {
+    "custom_metrics": [
+      {
+        "name": "requirements_coverage",
+        "description": "Percentage of requirements with comments or reviews",
+        "calculation": "commented_requirements / total_requirements * 100"
+      },
+      {
+        "name": "collaboration_velocity",
+        "description": "Average time from document creation to first collaboration",
+        "calculation": "avg(first_comment_time - document_creation_time)"
+      }
+    ],
+    "custom_dimensions": [
+      {
+        "name": "project_phase",
+        "values": ["planning", "development", "testing", "deployment"],
+        "mapping_field": "document.metadata.project_phase"
+      },
+      {
+        "name": "team_size",
+        "values": ["small", "medium", "large"],
+        "mapping_logic": "collaborators_count < 5 ? 'small' : collaborators_count < 15 ? 'medium' : 'large'"
+      }
+    ]
+  }
+}

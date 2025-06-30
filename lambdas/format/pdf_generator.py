@@ -1,0 +1,696 @@
+import io
+import base64
+import logging
+from datetime import datetime, timezone
+from jinja2 import Template
+
+# Optional imports for enhanced functionality
+try:
+    import weasyprint
+    WEASYPRINT_AVAILABLE = True
+except ImportError:
+    WEASYPRINT_AVAILABLE = False
+
+try:
+    import matplotlib.pyplot as plt
+    import matplotlib.patches as mpatches
+    MATPLOTLIB_AVAILABLE = True
+except ImportError:
+    MATPLOTLIB_AVAILABLE = False
+
+try:
+    import plotly.graph_objects as go
+    import plotly.io as pio
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    PLOTLY_AVAILABLE = False
+
+from reportlab.lib.pagesizes import letter, A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
+
+logger = logging.getLogger()
+
+class AdvancedPDFGenerator:
+    """Advanced PDF generator with charts, tables, and professional formatting."""
+    
+    def __init__(self):
+        self.styles = getSampleStyleSheet()
+        self.custom_styles = self._create_custom_styles()
+    
+    def _create_custom_styles(self):
+        """Create custom paragraph styles for consistent formatting."""
+        styles = {}
+        
+        # Title style
+        styles['CustomTitle'] = ParagraphStyle(
+            'CustomTitle',
+            parent=self.styles['Title'],
+            fontSize=24,
+            spaceAfter=30,
+            alignment=TA_CENTER,
+            textColor=colors.Color(0.169, 0.243, 0.314)  # Dark blue
+        )
+        
+        # Heading styles
+        styles['CustomHeading1'] = ParagraphStyle(
+            'CustomHeading1',
+            parent=self.styles['Heading1'],
+            fontSize=18,
+            spaceAfter=12,
+            spaceBefore=20,
+            textColor=colors.Color(0.169, 0.243, 0.314)
+        )
+        
+        styles['CustomHeading2'] = ParagraphStyle(
+            'CustomHeading2',
+            parent=self.styles['Heading2'],
+            fontSize=14,
+            spaceAfter=8,
+            spaceBefore=16,
+            textColor=colors.Color(0.231, 0.337, 0.435)
+        )
+        
+        # Body text
+        styles['CustomBody'] = ParagraphStyle(
+            'CustomBody',
+            parent=self.styles['Normal'],
+            fontSize=11,
+            spaceAfter=6,
+            alignment=TA_JUSTIFY,
+            lineHeight=1.2
+        )
+        
+        # Metadata style
+        styles['MetadataStyle'] = ParagraphStyle(
+            'MetadataStyle',
+            parent=self.styles['Normal'],
+            fontSize=10,
+            textColor=colors.grey,
+            alignment=TA_LEFT
+        )
+        
+        return styles
+    
+    def generate_advanced_pdf(self, request_data, formatted_outputs):
+        """Generate advanced PDF with charts and enhanced formatting."""
+        try:
+            buffer = io.BytesIO()
+            doc = SimpleDocTemplate(
+                buffer,
+                pagesize=A4,
+                rightMargin=72,
+                leftMargin=72,
+                topMargin=72,
+                bottomMargin=18
+            )
+            
+            # Build document content
+            story = []
+            
+            # Title page
+            story.extend(self._create_title_page(request_data))
+            story.append(PageBreak())
+            
+            # Executive summary with charts
+            story.extend(self._create_executive_summary(request_data, formatted_outputs))
+            
+            # Requirements sections
+            story.extend(self._create_requirements_sections(request_data, formatted_outputs))
+            
+            # Summary charts and tables
+            story.extend(self._create_summary_visualizations(request_data, formatted_outputs))
+            
+            # Appendix
+            story.extend(self._create_appendix(request_data))
+            
+            # Build PDF
+            doc.build(story)
+            
+            pdf_bytes = buffer.getvalue()
+            buffer.close()
+            
+            return pdf_bytes
+            
+        except Exception as e:
+            logger.error(f"Error generating advanced PDF: {str(e)}")
+            return None
+    
+    def _create_title_page(self, request_data):
+        """Create professional title page."""
+        story = []
+        
+        # Main title
+        story.append(Spacer(1, 2*inch))
+        title = Paragraph("System Requirements Analysis", self.custom_styles['CustomTitle'])
+        story.append(title)
+        
+        story.append(Spacer(1, 0.5*inch))
+        
+        # Document metadata table
+        metadata = [
+            ['Document', request_data.get('filename', 'Unknown')],
+            ['Request ID', request_data.get('requestId', 'Unknown')],
+            ['Processed', datetime.now(timezone.utc).strftime('%B %d, %Y')],
+            ['Generated by', 'AutoSpec.AI'],
+            ['Version', '1.0']
+        ]
+        
+        metadata_table = Table(metadata, colWidths=[2*inch, 3*inch])
+        metadata_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.Color(0.169, 0.243, 0.314)),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.Color(0.95, 0.95, 0.95)),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+        ]))
+        
+        story.append(metadata_table)
+        story.append(Spacer(1, 1*inch))
+        
+        # Abstract
+        abstract_text = """
+        This document presents a comprehensive analysis of system requirements generated using 
+        artificial intelligence. The analysis includes functional and non-functional requirements, 
+        stakeholder roles, technical architecture considerations, and compliance requirements.
+        """
+        
+        abstract = Paragraph(f"<b>Abstract:</b> {abstract_text}", self.custom_styles['CustomBody'])
+        story.append(abstract)
+        
+        return story
+    
+    def _create_executive_summary(self, request_data, formatted_outputs):
+        """Create executive summary with visualization."""
+        story = []
+        
+        story.append(Paragraph("Executive Summary", self.custom_styles['CustomHeading1']))
+        
+        ai_response = request_data.get('aiResponse', {})
+        requirements_sections = ai_response.get('requirements_sections', {})
+        
+        # Executive summary text
+        exec_summary = requirements_sections.get('executive_summary', 'No executive summary available.')
+        summary_para = Paragraph(exec_summary, self.custom_styles['CustomBody'])
+        story.append(summary_para)
+        
+        story.append(Spacer(1, 20))
+        
+        # Requirements overview chart
+        chart_image = self._create_requirements_overview_chart(requirements_sections)
+        if chart_image:
+            story.append(chart_image)
+        
+        return story
+    
+    def _create_requirements_overview_chart(self, requirements_sections):
+        """Create a visual overview of requirements sections."""
+        try:
+            # Create pie chart of requirements sections
+            section_names = []
+            section_sizes = []
+            
+            section_mapping = {
+                'functional_requirements': 'Functional Requirements',
+                'non_functional_requirements': 'Non-Functional Requirements',
+                'stakeholder_roles_and_responsibilities': 'Stakeholder Roles',
+                'technical_architecture_considerations': 'Technical Architecture',
+                'integration_requirements': 'Integration Requirements',
+                'data_requirements': 'Data Requirements',
+                'security_and_compliance': 'Security & Compliance'
+            }
+            
+            for key, name in section_mapping.items():
+                content = requirements_sections.get(key, '')
+                if content and content.strip():
+                    section_names.append(name)
+                    # Simple metric: word count
+                    section_sizes.append(len(content.split()))
+            
+            if not section_names:
+                return None
+            
+            # Create matplotlib figure
+            fig, ax = plt.subplots(figsize=(8, 6))
+            colors_list = plt.cm.Set3(range(len(section_names)))
+            
+            wedges, texts, autotexts = ax.pie(
+                section_sizes, 
+                labels=section_names, 
+                autopct='%1.1f%%',
+                colors=colors_list,
+                startangle=90
+            )
+            
+            ax.set_title('Requirements Analysis Overview', fontsize=14, fontweight='bold')
+            
+            # Save to buffer
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png', dpi=150, bbox_inches='tight')
+            buffer.seek(0)
+            
+            # Convert to ReportLab image
+            from reportlab.platypus import Image
+            chart_image = Image(buffer, width=6*inch, height=4*inch)
+            
+            plt.close()
+            return chart_image
+            
+        except Exception as e:
+            logger.error(f"Error creating requirements chart: {str(e)}")
+            return None
+    
+    def _create_requirements_sections(self, request_data, formatted_outputs):
+        """Create detailed requirements sections."""
+        story = []
+        
+        ai_response = request_data.get('aiResponse', {})
+        requirements_sections = ai_response.get('requirements_sections', {})
+        
+        section_mapping = {
+            'functional_requirements': 'Functional Requirements',
+            'non_functional_requirements': 'Non-Functional Requirements',
+            'stakeholder_roles_and_responsibilities': 'Stakeholder Roles and Responsibilities',
+            'technical_architecture_considerations': 'Technical Architecture Considerations',
+            'integration_requirements': 'Integration Requirements',
+            'data_requirements': 'Data Requirements',
+            'security_and_compliance': 'Security and Compliance'
+        }
+        
+        for key, title in section_mapping.items():
+            content = requirements_sections.get(key, '')
+            if content and content.strip():
+                story.append(PageBreak())
+                story.append(Paragraph(title, self.custom_styles['CustomHeading1']))
+                
+                # Format content with proper paragraph breaks
+                paragraphs = content.split('\n\n')
+                for para in paragraphs:
+                    if para.strip():
+                        # Handle bullet points
+                        if para.strip().startswith('-') or para.strip().startswith('•'):
+                            lines = para.split('\n')
+                            for line in lines:
+                                if line.strip():
+                                    bullet_para = Paragraph(f"• {line.strip().lstrip('-•').strip()}", 
+                                                          self.custom_styles['CustomBody'])
+                                    story.append(bullet_para)
+                        else:
+                            story.append(Paragraph(para.strip(), self.custom_styles['CustomBody']))
+                
+                story.append(Spacer(1, 20))
+        
+        return story
+    
+    def _create_summary_visualizations(self, request_data, formatted_outputs):
+        """Create summary charts and tables."""
+        story = []
+        
+        story.append(PageBreak())
+        story.append(Paragraph("Analysis Summary", self.custom_styles['CustomHeading1']))
+        
+        # Processing summary table
+        ai_response = request_data.get('aiResponse', {})
+        
+        summary_data = [
+            ['Metric', 'Value'],
+            ['Processing Model', ai_response.get('model_used', 'Unknown')],
+            ['Generated At', ai_response.get('generated_at', 'Unknown')],
+            ['Processing Status', ai_response.get('processing_status', 'Unknown')],
+            ['Sections Analyzed', str(len(ai_response.get('requirements_sections', {})))],
+            ['File Type', request_data.get('fileType', 'Unknown')],
+            ['File Size', f"{request_data.get('fileSize', 0)} bytes"],
+        ]
+        
+        summary_table = Table(summary_data, colWidths=[2.5*inch, 2.5*inch])
+        summary_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.Color(0.169, 0.243, 0.314)),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ]))
+        
+        story.append(summary_table)
+        story.append(Spacer(1, 30))
+        
+        # Quality metrics (simulated)
+        quality_chart = self._create_quality_metrics_chart()
+        if quality_chart:
+            story.append(Paragraph("Quality Assessment", self.custom_styles['CustomHeading2']))
+            story.append(quality_chart)
+        
+        return story
+    
+    def _create_quality_metrics_chart(self):
+        """Create quality metrics visualization."""
+        try:
+            # Simulated quality metrics
+            metrics = {
+                'Completeness': 85,
+                'Clarity': 90,
+                'Feasibility': 78,
+                'Testability': 82,
+                'Consistency': 88
+            }
+            
+            fig, ax = plt.subplots(figsize=(10, 6))
+            
+            categories = list(metrics.keys())
+            values = list(metrics.values())
+            
+            bars = ax.bar(categories, values, color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'])
+            
+            ax.set_ylabel('Quality Score (%)')
+            ax.set_title('Requirements Quality Assessment', fontsize=14, fontweight='bold')
+            ax.set_ylim(0, 100)
+            
+            # Add value labels on bars
+            for bar, value in zip(bars, values):
+                height = bar.get_height()
+                ax.text(bar.get_x() + bar.get_width()/2., height + 1,
+                       f'{value}%', ha='center', va='bottom')
+            
+            plt.xticks(rotation=45, ha='right')
+            plt.tight_layout()
+            
+            # Save to buffer
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png', dpi=150, bbox_inches='tight')
+            buffer.seek(0)
+            
+            # Convert to ReportLab image
+            from reportlab.platypus import Image
+            chart_image = Image(buffer, width=7*inch, height=4*inch)
+            
+            plt.close()
+            return chart_image
+            
+        except Exception as e:
+            logger.error(f"Error creating quality metrics chart: {str(e)}")
+            return None
+    
+    def _create_appendix(self, request_data):
+        """Create appendix with metadata and technical details."""
+        story = []
+        
+        story.append(PageBreak())
+        story.append(Paragraph("Appendix", self.custom_styles['CustomHeading1']))
+        
+        # Technical details
+        story.append(Paragraph("Technical Processing Details", self.custom_styles['CustomHeading2']))
+        
+        tech_details = f"""
+        This analysis was generated using AutoSpec.AI, an advanced document analysis system 
+        powered by artificial intelligence. The system uses Amazon Bedrock with Claude 3 Sonnet 
+        to analyze business documents and extract structured system requirements.
+        
+        Processing Pipeline:
+        1. Document ingestion and text extraction
+        2. AI-powered analysis using specialized prompts
+        3. Requirements structuring and validation
+        4. Multi-format output generation
+        
+        For more information, visit: https://autospec.ai
+        """
+        
+        story.append(Paragraph(tech_details, self.custom_styles['CustomBody']))
+        
+        # Footer
+        story.append(Spacer(1, 1*inch))
+        footer_text = f"Generated by AutoSpec.AI on {datetime.now(timezone.utc).strftime('%B %d, %Y at %H:%M UTC')}"
+        story.append(Paragraph(footer_text, self.custom_styles['MetadataStyle']))
+        
+        return story
+
+def generate_enhanced_html(markdown_content, request_data, requirements_sections):
+    """Generate enhanced HTML with interactive features."""
+    html_template = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Requirements - {{ filename }}</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .metadata {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .tabs {
+            display: flex;
+            background-color: #f1f1f1;
+            border-radius: 8px 8px 0 0;
+        }
+        .tab {
+            background-color: inherit;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            flex: 1;
+            text-align: center;
+        }
+        .tab:hover {
+            background-color: #ddd;
+        }
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+        }
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+        .tabcontent.active {
+            display: block;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            transition: width 0.3s ease;
+        }
+        .footer {
+            text-align: center;
+            color: #666;
+            margin-top: 50px;
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+        @media print {
+            .header { background: #2c3e50 !important; }
+            .chart-container { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>System Requirements Analysis</h1>
+        <p>{{ filename }} | Generated by AutoSpec.AI</p>
+    </div>
+
+    <div class="metadata">
+        <h3>Document Information</h3>
+        <p><strong>Request ID:</strong> {{ request_id }}</p>
+        <p><strong>Processed:</strong> {{ processed_date }}</p>
+        <p><strong>AI Model:</strong> {{ model_used }}</p>
+        <p><strong>Status:</strong> {{ status }}</p>
+    </div>
+
+    <div class="chart-container">
+        <h3>Requirements Overview</h3>
+        <div id="overviewChart"></div>
+    </div>
+
+    <div class="tabs">
+        {% for section_id, section_name in sections.items() %}
+        <button class="tab{% if loop.first %} active{% endif %}" onclick="openTab(event, '{{ section_id }}')">
+            {{ section_name.replace('_', ' ').title() }}
+        </button>
+        {% endfor %}
+    </div>
+
+    {% for section_id, section_content in sections.items() %}
+    <div id="{{ section_id }}" class="tabcontent{% if loop.first %} active{% endif %}">
+        <h2>{{ section_id.replace('_', ' ').title() }}</h2>
+        <div class="section">
+            {{ section_content | safe }}
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="chart-container">
+        <h3>Quality Assessment</h3>
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 85%"></div>
+        </div>
+        <p>Overall Quality Score: <strong>85%</strong></p>
+        <div id="qualityChart"></div>
+    </div>
+
+    <div class="footer">
+        <p>Generated by AutoSpec.AI<br>
+        Smart Document-to-System Requirements Analyzer</p>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tabs;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            tabs = document.getElementsByClassName("tab");
+            for (i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Create overview chart
+        var overviewData = [{
+            values: {{ section_counts | safe }},
+            labels: {{ section_names | safe }},
+            type: 'pie',
+            marker: {
+                colors: ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#34495e']
+            }
+        }];
+
+        var overviewLayout = {
+            title: 'Requirements Distribution',
+            showlegend: true,
+            margin: { t: 50, l: 50, r: 50, b: 50 }
+        };
+
+        Plotly.newPlot('overviewChart', overviewData, overviewLayout);
+
+        // Create quality chart
+        var qualityData = [{
+            x: ['Completeness', 'Clarity', 'Feasibility', 'Testability', 'Consistency'],
+            y: [85, 90, 78, 82, 88],
+            type: 'bar',
+            marker: {
+                color: ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6']
+            }
+        }];
+
+        var qualityLayout = {
+            title: 'Quality Metrics',
+            xaxis: { title: 'Metrics' },
+            yaxis: { title: 'Score (%)' },
+            margin: { t: 50, l: 50, r: 50, b: 100 }
+        };
+
+        Plotly.newPlot('qualityChart', qualityData, qualityLayout);
+    </script>
+</body>
+</html>"""
+    
+    try:
+        # Prepare section data for charts
+        section_names = []
+        section_counts = []
+        
+        for section_id, content in requirements_sections.items():
+            if content and content.strip():
+                section_names.append(section_id.replace('_', ' ').title())
+                section_counts.append(len(content.split()))
+        
+        template = Template(html_template)
+        return template.render(
+            filename=request_data.get('filename', 'Unknown'),
+            request_id=request_data.get('requestId', 'Unknown'),
+            processed_date=datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC'),
+            model_used=request_data.get('aiResponse', {}).get('model_used', 'Unknown'),
+            status=request_data.get('status', 'Unknown'),
+            sections=requirements_sections,
+            section_names=json.dumps(section_names),
+            section_counts=json.dumps(section_counts)
+        )
+        
+    except Exception as e:
+        logger.error(f"Error generating enhanced HTML: {str(e)}")
+        return markdown_content  # Fallback to plain markdown

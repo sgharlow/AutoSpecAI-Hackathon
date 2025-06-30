@@ -1,0 +1,139 @@
+{
+  "name": "autospec-ai-testing",
+  "version": "1.0.0",
+  "description": "Comprehensive testing suite for AutoSpec.AI",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test:unit": "jest --testPathPattern=unit",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:e2e": "playwright test",
+    "test:performance": "node performance/load-testing.js",
+    "test:security": "npm run security:scan && npm run security:audit",
+    "test:accessibility": "pa11y-ci --sitemap http://localhost:3000/sitemap.xml",
+    "test:visual": "chromatic --project-token=$CHROMATIC_PROJECT_TOKEN",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e && npm run test:performance",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
+    "security:scan": "npm audit --audit-level=moderate",
+    "security:audit": "snyk test",
+    "security:penetration": "zap-baseline.py -t http://localhost:3000",
+    "performance:lighthouse": "lighthouse-ci automate",
+    "performance:bundle": "webpack-bundle-analyzer build/static/js/*.js",
+    "compliance:gdpr": "node compliance/gdpr-compliance-check.js",
+    "compliance:accessibility": "axe-cli http://localhost:3000",
+    "quality:lint": "eslint src/ testing/ --ext .js,.jsx,.ts,.tsx",
+    "quality:format": "prettier --check src/ testing/",
+    "quality:types": "tsc --noEmit",
+    "quality:all": "npm run quality:lint && npm run quality:format && npm run quality:types",
+    "setup:test-data": "node helpers/setup-test-data.js",
+    "cleanup:test-data": "node helpers/cleanup-test-data.js",
+    "report:generate": "node reporting/generate-test-report.js",
+    "report:upload": "node reporting/upload-results.js",
+    "ci:prepare": "npm run setup:test-data && npm run quality:all",
+    "ci:test": "npm run test:all && npm run security:scan && npm run report:generate",
+    "ci:cleanup": "npm run cleanup:test-data && npm run report:upload"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.40.0",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@testing-library/user-event": "^14.5.1",
+    "artillery": "^2.0.0",
+    "aws-sdk": "^2.1498.0",
+    "aws-sdk-mock": "^5.8.0",
+    "supertest": "^6.3.3",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-junit": "^16.0.0",
+    "jest-html-reporters": "^3.1.5",
+    "msw": "^2.0.8",
+    "nock": "^13.4.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.8.2",
+    "@types/jest": "^29.5.8",
+    "@types/supertest": "^2.0.16",
+    "accessibility-checker": "^3.1.59",
+    "axe-cli": "^4.6.0",
+    "chromatic": "^7.6.0",
+    "eslint": "^8.54.0",
+    "jest-watch-typeahead": "^2.2.2",
+    "lighthouse-ci": "^0.12.0",
+    "pa11y-ci": "^3.0.1",
+    "prettier": "^3.1.0",
+    "snyk": "^1.1248.0",
+    "typescript": "^5.3.2",
+    "webpack-bundle-analyzer": "^4.9.1"
+  },
+  "jest": {
+    "projects": [
+      {
+        "displayName": "Frontend Tests",
+        "testMatch": ["<rootDir>/unit/frontend/**/*.(test|spec).(js|jsx|ts|tsx)"],
+        "testEnvironment": "jsdom",
+        "setupFilesAfterEnv": ["<rootDir>/setup/frontend.setup.js"],
+        "moduleNameMapper": {
+          "^@/(.*)$": "<rootDir>/../src/$1"
+        }
+      },
+      {
+        "displayName": "Backend Tests", 
+        "testMatch": ["<rootDir>/unit/backend/**/*.(test|spec).(js|ts)"],
+        "testEnvironment": "node",
+        "setupFilesAfterEnv": ["<rootDir>/setup/backend.setup.js"],
+        "moduleNameMapper": {
+          "^@lambdas/(.*)$": "<rootDir>/../lambdas/$1"
+        }
+      },
+      {
+        "displayName": "Integration Tests",
+        "testMatch": ["<rootDir>/integration/**/*.(test|spec).(js|ts)"],
+        "testEnvironment": "node",
+        "setupFilesAfterEnv": ["<rootDir>/setup/integration.setup.js"],
+        "testTimeout": 60000
+      }
+    ],
+    "collectCoverageFrom": [
+      "../src/**/*.{js,jsx,ts,tsx}",
+      "../lambdas/**/*.{js,ts}",
+      "!**/*.d.ts",
+      "!**/node_modules/**",
+      "!**/coverage/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    },
+    "coverageReporters": ["text", "lcov", "html", "json-summary"]
+  },
+  "lighthouse-ci": {
+    "ci": {
+      "collect": {
+        "url": ["http://localhost:3000"],
+        "numberOfRuns": 3
+      },
+      "assert": {
+        "assertions": {
+          "categories:performance": ["error", {"minScore": 0.8}],
+          "categories:accessibility": ["error", {"minScore": 0.9}],
+          "categories:best-practices": ["error", {"minScore": 0.9}],
+          "categories:seo": ["error", {"minScore": 0.8}]
+        }
+      },
+      "upload": {
+        "target": "temporary-public-storage"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

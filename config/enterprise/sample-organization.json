@@ -1,0 +1,61 @@
+{
+  "organizationId": "org_acme_corp_001",
+  "name": "ACME Corporation",
+  "domain": "acme.com",
+  "ssoEnabled": true,
+  "ldapEnabled": true,
+  "integrations": [
+    "slack",
+    "jira",
+    "github",
+    "microsoft_teams"
+  ],
+  "settings": {
+    "allowSelfProvisioning": false,
+    "requireMFA": true,
+    "sessionTimeout": 480,
+    "passwordPolicy": {
+      "minLength": 12,
+      "requireUppercase": true,
+      "requireLowercase": true,
+      "requireNumbers": true,
+      "requireSymbols": true,
+      "passwordHistory": 5
+    },
+    "ipWhitelist": [
+      "203.0.113.0/24",
+      "198.51.100.0/24"
+    ],
+    "allowedEmailDomains": [
+      "acme.com",
+      "acme-corp.com"
+    ],
+    "defaultUserRole": "user",
+    "autoProvisionDepartments": [
+      "Engineering",
+      "Product",
+      "Marketing",
+      "Sales"
+    ]
+  },
+  "billing": {
+    "plan": "enterprise",
+    "maxUsers": 1000,
+    "features": [
+      "sso",
+      "ldap",
+      "advanced_analytics",
+      "compliance_reporting",
+      "priority_support"
+    ],
+    "billingContact": "billing@acme.com",
+    "technicalContact": "admin@acme.com"
+  },
+  "compliance": {
+    "frameworks": ["SOX", "GDPR", "HIPAA"],
+    "dataRetentionDays": 2555,
+    "auditLogRetention": 2555,
+    "encryptionRequired": true,
+    "dataResidency": "US"
+  }
+}

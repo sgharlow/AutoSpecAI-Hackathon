@@ -1,0 +1,412 @@
+name: Performance Testing Pipeline
+
+on:
+  # Run on pushes to main branch
+  push:
+    branches: [ main, master ]
+  
+  # Run on pull requests targeting main
+  pull_request:
+    branches: [ main, master ]
+  
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to test'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - staging
+        - prod
+      
+      test_type:
+        description: 'Type of performance test'
+        required: true
+        default: 'standard'
+        type: choice
+        options:
+        - standard
+        - comprehensive
+        - baseline-only
+        - comparison-only
+      
+      performance_threshold:
+        description: 'Performance regression threshold (%)'
+        required: false
+        default: '10'
+        type: string
+      
+      fail_on_regression:
+        description: 'Fail pipeline on performance regression'
+        required: false
+        default: true
+        type: boolean
+
+env:
+  AWS_REGION: us-east-1
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  performance-test:
+    name: Performance Testing
+    runs-on: ubuntu-latest
+    
+    # Set timeout to prevent hanging builds
+    timeout-minutes: 60
+    
+    # Environment-specific configuration
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    
+    strategy:
+      matrix:
+        environment: 
+          - ${{ github.event.inputs.environment || 'dev' }}
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Cache Python Dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install Python Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install asyncio aiohttp boto3 statistics dataclasses
+        # Install additional dependencies if requirements.txt exists
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: Verify AWS Connection
+      run: |
+        aws sts get-caller-identity
+        echo "✅ AWS credentials verified"
+    
+    - name: Setup Performance Testing Directories
+      run: |
+        mkdir -p performance-results
+        mkdir -p performance-baselines
+        echo "📁 Created performance testing directories"
+    
+    - name: Determine Test Configuration
+      id: test-config
+      run: |
+        # Set test parameters based on trigger and inputs
+        ENVIRONMENT="${{ matrix.environment }}"
+        TEST_TYPE="${{ github.event.inputs.test_type || 'standard' }}"
+        THRESHOLD="${{ github.event.inputs.performance_threshold || '10' }}"
+        FAIL_ON_REGRESSION="${{ github.event.inputs.fail_on_regression || 'true' }}"
+        
+        # Adjust configuration based on environment
+        case "$ENVIRONMENT" in
+          dev)
+            DURATION="300"  # 5 minutes
+            USERS="10"
+            ;;
+          staging)
+            DURATION="600"  # 10 minutes
+            USERS="25"
+            ;;
+          prod)
+            DURATION="900"  # 15 minutes
+            USERS="50"
+            ;;
+        esac
+        
+        echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+        echo "test_type=$TEST_TYPE" >> $GITHUB_OUTPUT
+        echo "threshold=$THRESHOLD" >> $GITHUB_OUTPUT
+        echo "fail_on_regression=$FAIL_ON_REGRESSION" >> $GITHUB_OUTPUT
+        echo "duration=$DURATION" >> $GITHUB_OUTPUT
+        echo "users=$USERS" >> $GITHUB_OUTPUT
+        
+        echo "🔧 Test Configuration:"
+        echo "  Environment: $ENVIRONMENT"
+        echo "  Test Type: $TEST_TYPE"
+        echo "  Threshold: $THRESHOLD%"
+        echo "  Duration: $DURATION seconds"
+        echo "  Users: $USERS"
+    
+    - name: Wait for Deployment (if needed)
+      if: github.event_name == 'push'
+      run: |
+        echo "⏳ Waiting 5 minutes for deployment to complete..."
+        sleep 300
+    
+    - name: Run Load Testing Suite
+      id: load-test
+      if: steps.test-config.outputs.test_type != 'baseline-only'
+      run: |
+        echo "🚀 Starting load testing for ${{ steps.test-config.outputs.environment }}..."
+        
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+        OUTPUT_FILE="performance-results/load_test_${{ steps.test-config.outputs.environment }}_${TIMESTAMP}.json"
+        
+        python3 scripts/load-testing-suite.py \
+          --environment ${{ steps.test-config.outputs.environment }} \
+          --test-type full \
+          --duration ${{ steps.test-config.outputs.duration }} \
+          --users ${{ steps.test-config.outputs.users }} \
+          --report \
+          --output-file "$OUTPUT_FILE" || {
+          echo "❌ Load testing failed"
+          exit 1
+        }
+        
+        echo "✅ Load testing completed"
+        echo "output_file=$OUTPUT_FILE" >> $GITHUB_OUTPUT
+    
+    - name: Generate Performance Baseline
+      id: baseline
+      if: steps.test-config.outputs.test_type == 'comprehensive' || steps.test-config.outputs.test_type == 'baseline-only'
+      run: |
+        echo "📊 Generating performance baseline..."
+        
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+        BASELINE_FILE="performance-baselines/baseline_${{ steps.test-config.outputs.environment }}_${TIMESTAMP}.json"
+        REPORT_FILE="performance-results/baseline_report_${{ steps.test-config.outputs.environment }}_${TIMESTAMP}.md"
+        
+        python3 scripts/performance-benchmarks.py \
+          --environment ${{ steps.test-config.outputs.environment }} \
+          --baseline \
+          --load-test \
+          --output "$REPORT_FILE" || {
+          echo "❌ Baseline generation failed"
+          exit 1
+        }
+        
+        echo "✅ Baseline generated"
+        echo "baseline_file=$BASELINE_FILE" >> $GITHUB_OUTPUT
+        echo "report_file=$REPORT_FILE" >> $GITHUB_OUTPUT
+    
+    - name: Compare with Previous Baseline
+      id: comparison
+      if: steps.test-config.outputs.test_type == 'comprehensive' || steps.test-config.outputs.test_type == 'comparison-only'
+      continue-on-error: true
+      run: |
+        echo "🔍 Comparing with previous baseline..."
+        
+        # Find previous baseline files
+        PREVIOUS_BASELINE=$(find performance-baselines -name "baseline_${{ steps.test-config.outputs.environment }}_*.json" -type f | sort -r | head -n 2 | tail -n 1 || echo "")
+        CURRENT_BASELINE=$(find performance-baselines -name "baseline_${{ steps.test-config.outputs.environment }}_*.json" -type f | sort -r | head -n 1 || echo "")
+        
+        if [[ -z "$PREVIOUS_BASELINE" || -z "$CURRENT_BASELINE" ]]; then
+          echo "⚠️ Cannot find baselines for comparison"
+          echo "comparison_available=false" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+        
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+        COMPARISON_FILE="performance-results/comparison_${{ steps.test-config.outputs.environment }}_${TIMESTAMP}.md"
+        
+        python3 scripts/performance-benchmarks.py \
+          --environment ${{ steps.test-config.outputs.environment }} \
+          --compare \
+          --before-file "$PREVIOUS_BASELINE" \
+          --after-file "$CURRENT_BASELINE" \
+          --output "$COMPARISON_FILE" || {
+          echo "❌ Comparison failed"
+          echo "comparison_available=false" >> $GITHUB_OUTPUT
+          exit 0
+        }
+        
+        echo "✅ Comparison completed"
+        echo "comparison_available=true" >> $GITHUB_OUTPUT
+        echo "comparison_file=$COMPARISON_FILE" >> $GITHUB_OUTPUT
+        echo "previous_baseline=$PREVIOUS_BASELINE" >> $GITHUB_OUTPUT
+        echo "current_baseline=$CURRENT_BASELINE" >> $GITHUB_OUTPUT
+    
+    - name: Analyze Performance Results
+      id: analysis
+      if: steps.comparison.outputs.comparison_available == 'true'
+      run: |
+        echo "🔬 Analyzing performance results..."
+        
+        COMPARISON_FILE="${{ steps.comparison.outputs.comparison_file }}"
+        
+        # Extract performance metrics from the comparison report
+        PERFORMANCE_SCORE=$(grep "Overall Performance Score:" "$COMPARISON_FILE" | head -n 1 | grep -oE '[-+]?[0-9]+\.?[0-9]*' || echo "0")
+        COST_IMPACT=$(grep "Cost Change:" "$COMPARISON_FILE" | head -n 1 | grep -oE '[-+]?[0-9]+\.?[0-9]*' || echo "0")
+        
+        echo "📈 Performance Score: ${PERFORMANCE_SCORE}%"
+        echo "💰 Cost Impact: ${COST_IMPACT}%"
+        
+        # Check thresholds
+        THRESHOLD="${{ steps.test-config.outputs.threshold }}"
+        HAS_REGRESSION=false
+        
+        if (( $(echo "$PERFORMANCE_SCORE < -$THRESHOLD" | bc -l 2>/dev/null || echo "0") )); then
+          echo "⚠️ Performance regression detected: ${PERFORMANCE_SCORE}% (threshold: -${THRESHOLD}%)"
+          HAS_REGRESSION=true
+        fi
+        
+        if (( $(echo "$COST_IMPACT > 20" | bc -l 2>/dev/null || echo "0") )); then
+          echo "⚠️ Significant cost increase detected: ${COST_IMPACT}%"
+          HAS_REGRESSION=true
+        fi
+        
+        echo "performance_score=$PERFORMANCE_SCORE" >> $GITHUB_OUTPUT
+        echo "cost_impact=$COST_IMPACT" >> $GITHUB_OUTPUT
+        echo "has_regression=$HAS_REGRESSION" >> $GITHUB_OUTPUT
+        
+        if [[ "$HAS_REGRESSION" == "true" ]]; then
+          echo "🚨 Performance regression detected"
+        else
+          echo "✅ Performance within acceptable thresholds"
+        fi
+    
+    - name: Run Automated Performance Pipeline
+      id: pipeline
+      run: |
+        echo "🔄 Running automated performance pipeline..."
+        
+        PIPELINE_ARGS="--environment ${{ steps.test-config.outputs.environment }}"
+        PIPELINE_ARGS="$PIPELINE_ARGS --format markdown"
+        PIPELINE_ARGS="$PIPELINE_ARGS --threshold ${{ steps.test-config.outputs.threshold }}"
+        
+        # Configure pipeline based on test type
+        case "${{ steps.test-config.outputs.test_type }}" in
+          comprehensive)
+            PIPELINE_ARGS="$PIPELINE_ARGS --baseline --compare"
+            ;;
+          baseline-only)
+            PIPELINE_ARGS="$PIPELINE_ARGS --baseline --no-load-test"
+            ;;
+          comparison-only)
+            PIPELINE_ARGS="$PIPELINE_ARGS --compare --no-load-test"
+            ;;
+          standard)
+            PIPELINE_ARGS="$PIPELINE_ARGS --compare"
+            ;;
+        esac
+        
+        if [[ "${{ steps.test-config.outputs.fail_on_regression }}" == "false" ]]; then
+          PIPELINE_ARGS="$PIPELINE_ARGS --no-fail-on-regression"
+        fi
+        
+        bash scripts/automated-performance-pipeline.sh $PIPELINE_ARGS || {
+          echo "❌ Performance pipeline failed"
+          exit 1
+        }
+        
+        echo "✅ Performance pipeline completed"
+    
+    - name: Upload Performance Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: performance-results-${{ steps.test-config.outputs.environment }}
+        path: |
+          performance-results/
+          performance-baselines/
+        retention-days: 30
+    
+    - name: Comment PR with Results
+      if: github.event_name == 'pull_request' && steps.comparison.outputs.comparison_available == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = 'performance-results';
+          
+          // Find the latest comparison report
+          const files = fs.readdirSync(path).filter(f => f.startsWith('comparison_'));
+          if (files.length === 0) {
+            console.log('No comparison report found');
+            return;
+          }
+          
+          const latestFile = files.sort().reverse()[0];
+          const reportContent = fs.readFileSync(`${path}/${latestFile}`, 'utf8');
+          
+          const performanceScore = '${{ steps.analysis.outputs.performance_score }}';
+          const costImpact = '${{ steps.analysis.outputs.cost_impact }}';
+          const hasRegression = '${{ steps.analysis.outputs.has_regression }}';
+          
+          const emoji = hasRegression === 'true' ? '⚠️' : '✅';
+          const title = hasRegression === 'true' ? 'Performance Regression Detected' : 'Performance Test Passed';
+          
+          const comment = `## ${emoji} ${title}
+          
+**Environment:** ${{ steps.test-config.outputs.environment }}
+**Performance Score:** ${performanceScore}%
+**Cost Impact:** ${costImpact}%
+
+<details>
+<summary>📊 Detailed Performance Report</summary>
+
+\`\`\`
+${reportContent.substring(0, 5000)}${reportContent.length > 5000 ? '\n... (truncated)' : ''}
+\`\`\`
+
+</details>
+
+**Artifacts:** Performance results are available in the workflow artifacts.
+`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+    
+    - name: Set Job Status
+      if: always()
+      run: |
+        if [[ "${{ steps.analysis.outputs.has_regression }}" == "true" && "${{ steps.test-config.outputs.fail_on_regression }}" == "true" ]]; then
+          echo "❌ Job failed due to performance regression"
+          exit 1
+        else
+          echo "✅ Performance testing completed successfully"
+        fi
+
+  notify:
+    name: Notify Results
+    runs-on: ubuntu-latest
+    needs: performance-test
+    if: always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    
+    steps:
+    - name: Slack Notification
+      if: env.SLACK_WEBHOOK_URL != ''
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        channel: '#autospec-alerts'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow
+        custom_payload: |
+          {
+            attachments: [{
+              color: '${{ job.status }}' === 'success' ? 'good' : 'danger',
+              title: `Performance Test ${job.status === 'success' ? 'Passed' : 'Failed'} - ${{ matrix.environment }}`,
+              fields: [
+                { title: 'Repository', value: '${{ github.repository }}', short: true },
+                { title: 'Environment', value: '${{ matrix.environment }}', short: true },
+                { title: 'Commit', value: '${{ github.sha }}', short: true },
+                { title: 'Author', value: '${{ github.actor }}', short: true }
+              ]
+            }]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

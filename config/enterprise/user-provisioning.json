@@ -1,0 +1,66 @@
+{
+  "email": "john.doe@acme.com",
+  "firstName": "John",
+  "lastName": "Doe",
+  "department": "Engineering",
+  "role": "Senior Software Engineer",
+  "title": "Senior Software Engineer",
+  "permissions": [
+    "document:read",
+    "document:write",
+    "document:share",
+    "analytics:view",
+    "integration:configure"
+  ],
+  "groups": [
+    "Engineering",
+    "AutoSpec Power Users",
+    "Product Development"
+  ],
+  "manager": "jane.smith@acme.com",
+  "costCenter": "ENG-001",
+  "location": "San Francisco, CA",
+  "phone": "+1-555-123-4567",
+  "mobile": "+1-555-987-6543",
+  "employeeId": "EMP12345",
+  "startDate": "2024-01-15",
+  "contractType": "full-time",
+  "timezone": "America/Los_Angeles",
+  "preferredLanguage": "en-US",
+  "sendWelcomeEmail": true,
+  "requirePasswordChange": true,
+  "temporaryPassword": "TempPass123!",
+  "mfaEnabled": true,
+  "accountSettings": {
+    "emailNotifications": true,
+    "smsNotifications": false,
+    "weeklyReports": true,
+    "marketingEmails": false,
+    "theme": "light",
+    "dateFormat": "MM/DD/YYYY",
+    "timeFormat": "12h"
+  },
+  "provisioningSettings": {
+    "createSlackAccount": true,
+    "createJiraAccount": true,
+    "createGithubAccess": true,
+    "setupVpnAccess": true,
+    "assignLaptop": true,
+    "scheduleOnboarding": true
+  },
+  "customAttributes": {
+    "clearanceLevel": "standard",
+    "trainingCompleted": false,
+    "emergencyContact": "jane.doe@example.com",
+    "dietary_restrictions": "vegetarian",
+    "t_shirt_size": "L"
+  },
+  "metadata": {
+    "provisionedBy": "hr@acme.com",
+    "provisioningReason": "new_hire",
+    "approvedBy": "jane.smith@acme.com",
+    "approvalDate": "2024-01-10T10:00:00Z",
+    "source": "hr_system",
+    "externalId": "HR-NH-2024-001"
+  }
+}

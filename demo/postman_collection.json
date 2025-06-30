@@ -1,0 +1,213 @@
+{
+  "info": {
+    "name": "AutoSpec.AI Demo Collection",
+    "description": "Complete API collection for demonstrating AutoSpec.AI capabilities",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://your-api-gateway-url.amazonaws.com",
+      "description": "AutoSpec.AI API Gateway Base URL"
+    },
+    {
+      "key": "api_key",
+      "value": "your-api-key-here",
+      "description": "API Key for Authentication"
+    },
+    {
+      "key": "request_id",
+      "value": "",
+      "description": "Request ID from upload response"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/v1/health",
+          "host": ["{{base_url}}"],
+          "path": ["v1", "health"]
+        },
+        "description": "Check API health status"
+      },
+      "response": []
+    },
+    {
+      "name": "API Documentation",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/v1/docs",
+          "host": ["{{base_url}}"],
+          "path": ["v1", "docs"]
+        },
+        "description": "Get API documentation"
+      },
+      "response": []
+    },
+    {
+      "name": "Supported Formats",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/v1/formats",
+          "host": ["{{base_url}}"],
+          "path": ["v1", "formats"]
+        },
+        "description": "Get supported input and output formats"
+      },
+      "response": []
+    },
+    {
+      "name": "Upload E-Commerce Document",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"file_content\": \"RS1Db21tZXJjZSBQbGF0Zm9ybSBSZXF1aXJlbWVudHMgRG9jdW1lbnQKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cblxuUHJvamVjdCBPdmVydmlld1xuLS0tLS0tLS0tLS0tLS0tLVxuV2UgbmVlZCB0byBkZXZlbG9wIGEgbW9kZXJuIGUtY29tbWVyY2UgcGxhdGZvcm0gdGhhdCBhbGxvd3MgY3VzdG9tZXJzIHRvIGJyb3dzZSBwcm9kdWN0cywgbWFrZSBwdXJjaGFzZXMsIGFuZCB0cmFjayBvcmRlcnMuIFRoZSBzeXN0ZW0gc2hvdWxkIHN1cHBvcnQgbXVsdGlwbGUgdmVuZG9ycyBhbmQgcHJvdmlkZSBjb21wcmVoZW5zaXZlIGFuYWx5dGljcy5cblxuQnVzaW5lc3MgT2JqZWN0aXZlc1xuLS0tLS0tLS0tLS0tLS0tLS0tLS0tXG4tIEluY3JlYXNlIG9ubGluZSBzYWxlcyBieSA0MCUgd2l0aGluIDYgbW9udGhzXG4tIFN1cHBvcnQgdXAgdG8gMTAsMDAwIGNvbmN1cnJlbnQgdXNlcnNcbi0gUmVkdWNlIGN1c3RvbWVyIHNlcnZpY2UgaW5xdWlyaWVzIGJ5IDMwJVxuLSBFbmFibGUgbXVsdGktdmVuZG9yIG1hcmtldHBsYWNlIGZ1bmN0aW9uYWxpdHlcblxuRnVuY3Rpb25hbCBSZXF1aXJlbWVudHNcbi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLVxuXG5Vc2VyIE1hbmFnZW1lbnQ6XG4tIFVzZXJzIG11c3QgYmUgYWJsZSB0byByZWdpc3RlciB3aXRoIGVtYWlsIGFuZCBwYXNzd29yZFxuLSBVc2VycyBzaG91bGQgYmUgYWJsZSB0byBsb2cgaW4gdXNpbmcgc29jaWFsIG1lZGlhIGFjY291bnRzIChHb29nbGUsIEZhY2Vib29rKVxuLSBTeXN0ZW0gbXVzdCBzdXBwb3J0IHVzZXIgcHJvZmlsZSBtYW5hZ2VtZW50XG4tIFBhc3N3b3JkIHJlc2V0IGZ1bmN0aW9uYWxpdHkgaXMgcmVxdWlyZWRcbi0gRW1haWwgdmVyaWZpY2F0aW9uIGZvciBuZXcgYWNjb3VudHNcblxuUHJvZHVjdCBDYXRhbG9nOlxuLSBEaXNwbGF5IHByb2R1Y3RzIHdpdGggaW1hZ2VzLCBkZXNjcmlwdGlvbnMsIGFuZCBwcmljaW5nXG4tIFN1cHBvcnQgcHJvZHVjdCBjYXRlZ29yaWVzIGFuZCBzdWJjYXRlZ29yaWVzXG4tIEVuYWJsZSBwcm9kdWN0IHNlYXJjaCB3aXRoIGZpbHRlcnMgKHByaWNlLCBicmFuZCwgcmF0aW5nKVxuLSBTaG93IHByb2R1Y3QgYXZhaWxhYmlsaXR5IGFuZCBpbnZlbnRvcnkgbGV2ZWxzXG4tIFN1cHBvcnQgcHJvZHVjdCByZXZpZXdzIGFuZCByYXRpbmdzXG5cblNob3BwaW5nIENhcnQ6XG4tIFVzZXJzIGNhbiBhZGQvcmVtb3ZlIGl0ZW1zIGZyb20gY2FydFxuLSBDYWxjdWxhdGUgdG90YWwgcHJpY2UgaW5jbHVkaW5nIHRheGVzIGFuZCBzaGlwcGluZ1xuLSBTYXZlIGNhcnQgY29udGVudHMgZm9yIGxvZ2dlZC1pbiB1c2Vyc1xuLSBBcHBseSBkaXNjb3VudCBjb2RlcyBhbmQgcHJvbW90aW9uc1xuLSBFc3RpbWF0ZSBzaGlwcGluZyBjb3N0cyBiYXNlZCBvbiBsb2NhdGlvblxuXG5Ob24tRnVuY3Rpb25hbCBSZXF1aXJlbWVudHNcbi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tXG5cblBlcmZvcm1hbmNlOlxuLSBQYWdlIGxvYWQgdGltZXMgbXVzdCBiZSB1bmRlciAzIHNlY29uZHNcbi0gU3VwcG9ydCAxMCwwMDAgY29uY3VycmVudCB1c2Vyc1xuLSA5OS45JSB1cHRpbWUgYXZhaWxhYmlsaXR5XG4tIERhdGFiYXNlIHF1ZXJpZXMgc2hvdWxkIGNvbXBsZXRlIHdpdGhpbiA1MDBtc1xuXG5TZWN1cml0eTpcbi0gUENJIERTUyBjb21wbGlhbmNlIGZvciBwYXltZW50IHByb2Nlc3Npbmdcbi0gU1NMIGVuY3J5cHRpb24gZm9yIGFsbCBkYXRhIHRyYW5zbWlzc2lvblxuLSBTZWN1cmUgcGFzc3dvcmQgc3RvcmFnZSB3aXRoIGhhc2hpbmdcbi0gUHJvdGVjdGlvbiBhZ2FpbnN0IFNRTCBpbmplY3Rpb24gYW5kIFhTUyBhdHRhY2tzXG4tIFJlZ3VsYXIgc2VjdXJpdHkgYXVkaXRzIGFuZCBwZW5ldHJhdGlvbiB0ZXN0aW5n\",\n  \"filename\": \"e_commerce_requirements.txt\",\n  \"sender_email\": \"demo@autospec.ai\",\n  \"preferences\": {\n    \"quality\": \"premium\",\n    \"formats\": [\"html\", \"pdf\", \"json\", \"markdown\"],\n    \"charts\": true,\n    \"interactive\": true\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/v1/upload",
+          "host": ["{{base_url}}"],
+          "path": ["v1", "upload"]
+        },
+        "description": "Upload e-commerce requirements document for analysis"
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Extract request_id from response",
+              "if (pm.response.code === 202 || pm.response.code === 200) {",
+              "    const jsonData = pm.response.json();",
+              "    if (jsonData.request_id) {",
+              "        pm.environment.set('request_id', jsonData.request_id);",
+              "        console.log('Request ID saved:', jsonData.request_id);",
+              "    }",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Upload Banking App Document",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"file_content\": \"TW9iaWxlIEJhbmtpbmcgQXBwbGljYXRpb24gUmVxdWlyZW1lbnRzCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKRXhlY3V0aXZlIFN1bW1hcnkKLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBkb2N1bWVudCBvdXRsaW5lcyB0aGUgcmVxdWlyZW1lbnRzIGZvciBkZXZlbG9waW5nIGEgY29tcHJlaGVuc2l2ZSBtb2JpbGUgYmFua2luZyBhcHBsaWNhdGlvbiB0aGF0IHdpbGwgc2VydmUgb3VyIHJldGFpbCBjdXN0b21lcnMuIFRoZSBhcHAgbXVzdCBwcm92aWRlIHNlY3VyZSwgY29udmVuaWVudCBhY2Nlc3MgdG8gYmFua2luZyBzZXJ2aWNlcyB3aGlsZSBtYWludGFpbmluZyB0aGUgaGlnaGVzdCBzdGFuZGFyZHMgb2Ygc2VjdXJpdHkgYW5kIGNvbXBsaWFuY2UuCgpQcm9qZWN0IEdvYWxzCi0tLS0tLS0tLS0tLS0tLQotIFByb3ZpZGUgMjQvNyBhY2Nlc3MgdG8gYmFua2luZyBzZXJ2aWNlcyB2aWEgbW9iaWxlIGRldmljZXMKLSBSZWR1Y2UgYnJhbmNoIHZpc2l0cyBieSA2MCUgdGhyb3VnaCBkaWdpdGFsIHNlcnZpY2UgZGVsaXZlcnkKLSBJbXByb3ZlIGN1c3RvbWVyIHNhdGlzZmFjdGlvbiBzY29yZXMgdG8gNC44LzUgc3RhcnMKLSBFbnN1cmUgcmVndWxhdG9yeSBjb21wbGlhbmNlIGFjcm9zcyBhbGwganVyaXNkaWN0aW9ucwotIFN1cHBvcnQgNTAwLDAwMCBhY3RpdmUgdXNlcnMgd2l0aGluIGZpcnN0IHllYXIKCkNvcmUgQmFua2luZyBGZWF0dXJlcwotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCkFjY291bnQgTWFuYWdlbWVudDoKLSBWaWV3IGFjY291bnQgYmFsYW5jZXMgYW5kIHRyYW5zYWN0aW9uIGhpc3RvcnkKLSBEb3dubG9hZCBhY2NvdW50IHN0YXRlbWVudHMgKFBERiBmb3JtYXQpCi0gQWNjb3VudCBuaWNrbmFtZSBjdXN0b21pemF0aW9uCi0gTXVsdGktYWNjb3VudCBvdmVydmlldyBkYXNoYm9hcmQKLSBSZWFsLXRpbWUgYmFsYW5jZSB1cGRhdGVzCgpGdW5kIFRyYW5zZmVyczoKLSBUcmFuc2ZlciBiZXR3ZWVuIG93biBhY2NvdW50cyBpbnN0YW50bHkKLSBUcmFuc2ZlciB0byBvdGhlciBiYW5rIGN1c3RvbWVycyB1c2luZyBhY2NvdW50IG51bWJlcgotIEludGVybmF0aW9uYWwgd2lyZSB0cmFuc2ZlcnMgd2l0aCBTV0lGVCBpbnRlZ3JhdGlvbgotIFNjaGVkdWxlZCBhbmQgcmVjdXJyaW5nIHRyYW5zZmVycwotIFRyYW5zZmVyIGxpbWl0cyBhbmQgYXBwcm92YWwgd29ya2Zsb3dzCgpTZWN1cml0eSBGZWF0dXJlcwotLS0tLS0tLS0tLS0tLS0tLS0tCgpBdXRoZW50aWNhdGlvbjoKLSBNdWx0aS1mYWN0b3IgYXV0aGVudGljYXRpb24gKFNNUywgZW1haWwsIGF1dGhlbnRpY2F0b3IgYXBwKQotIEJpb21ldHJpYyBsb2dpbiAoZmluZ2VycHJpbnQsIGZhY2UgcmVjb2duaXRpb24sIHZvaWNlKQotIERldmljZSByZWdpc3RyYXRpb24gYW5kIG1hbmFnZW1lbnQKLSBTZXNzaW9uIHRpbWVvdXQgYW5kIGF1dG9tYXRpYyBsb2dvdXQKLSBGYWlsZWQgbG9naW4gYXR0ZW1wdCBsb2Nrb3V0",\n  \"filename\": \"mobile_banking_app.txt\",\n  \"sender_email\": \"demo@autospec.ai\",\n  \"preferences\": {\n    \"quality\": \"high\",\n    \"formats\": [\"html\", \"json\", \"markdown\"],\n    \"charts\": true,\n    \"interactive\": false\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/v1/upload",
+          "host": ["{{base_url}}"],
+          "path": ["v1", "upload"]
+        },
+        "description": "Upload mobile banking app requirements for analysis"
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Extract request_id from response",
+              "if (pm.response.code === 202 || pm.response.code === 200) {",
+              "    const jsonData = pm.response.json();",
+              "    if (jsonData.request_id) {",
+              "        pm.environment.set('request_id', jsonData.request_id);",
+              "        console.log('Request ID saved:', jsonData.request_id);",
+              "    }",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Check Processing Status",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/status/{{request_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["v1", "status", "{{request_id}}"]
+        },
+        "description": "Check the processing status of uploaded document"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Request History",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/history?limit=10",
+          "host": ["{{base_url}}"],
+          "path": ["v1", "history"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "description": "Get processing history of recent requests"
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-generate timestamps for requests",
+          "pm.globals.set('timestamp', new Date().toISOString());"
+        ]
+      }
+    }
+  ]
+}

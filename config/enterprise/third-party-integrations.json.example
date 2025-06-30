@@ -1,0 +1,134 @@
+{
+  "slack": {
+    "webhook_url": "${SLACK_WEBHOOK_URL}",
+    "channel": "#autospec-notifications",
+    "username": "AutoSpec.AI",
+    "icon_emoji": ":robot_face:",
+    "default_color": "good",
+    "mention_users": true,
+    "thread_replies": false,
+    "rich_formatting": true,
+    "notification_types": [
+      "document_processed",
+      "processing_failed",
+      "system_alerts",
+      "user_activity"
+    ]
+  },
+  "microsoft_teams": {
+    "webhook_url": "${TEAMS_WEBHOOK_URL}",
+    "theme_color": "0078D4",
+    "notification_types": [
+      "document_processed",
+      "processing_failed",
+      "system_alerts"
+    ],
+    "mention_users": false,
+    "summary_length": "short"
+  },
+  "jira": {
+    "base_url": "${JIRA_BASE_URL}",
+    "username": "${JIRA_USERNAME}",
+    "api_token": "${JIRA_API_TOKEN}",
+    "project_key": "AUTOSPEC",
+    "default_issue_type": "Task",
+    "default_priority": "Medium",
+    "auto_create_issues": true,
+    "issue_templates": {
+      "processing_failed": {
+        "summary": "Document Processing Failed: {document_name}",
+        "description": "AutoSpec.AI failed to process document {document_name}.\n\nError: {error_message}\nFile Type: {file_type}\nUser: {user_email}\nTimestamp: {timestamp}",
+        "issue_type": "Bug",
+        "priority": "High",
+        "labels": ["autospec", "processing-error"]
+      },
+      "system_alert": {
+        "summary": "AutoSpec.AI System Alert: {alert_type}",
+        "description": "System alert triggered in AutoSpec.AI.\n\nAlert: {alert_message}\nSeverity: {severity}\nEnvironment: {environment}\nTimestamp: {timestamp}",
+        "issue_type": "Incident",
+        "priority": "Critical",
+        "labels": ["autospec", "system-alert", "incident"]
+      }
+    }
+  },
+  "github": {
+    "token": "${GITHUB_TOKEN}",
+    "repository": "${GITHUB_REPOSITORY}",
+    "auto_create_issues": false,
+    "default_labels": ["autospec-ai", "automated"],
+    "issue_templates": {
+      "feature_request": {
+        "title": "Feature Request: {feature_name}",
+        "body": "Feature request from AutoSpec.AI user.\n\n**Requested by:** {user_email}\n**Organization:** {organization}\n**Description:** {description}\n**Priority:** {priority}",
+        "labels": ["feature-request", "autospec-ai"]
+      },
+      "bug_report": {
+        "title": "Bug Report: {bug_summary}",
+        "body": "Bug report from AutoSpec.AI.\n\n**Reporter:** {user_email}\n**Environment:** {environment}\n**Steps to Reproduce:** {steps}\n**Expected Behavior:** {expected}\n**Actual Behavior:** {actual}",
+        "labels": ["bug", "autospec-ai", "needs-triage"]
+      }
+    }
+  },
+  "webhook": {
+    "url": "${WEBHOOK_URL}",
+    "method": "POST",
+    "secret": "${WEBHOOK_SECRET}",
+    "headers": {
+      "User-Agent": "AutoSpec.AI/1.0",
+      "X-Source": "autospec-ai"
+    },
+    "timeout": 30,
+    "retry_attempts": 3,
+    "retry_delay": 5,
+    "payload_format": "json",
+    "notification_types": [
+      "document_processed",
+      "user_registered",
+      "organization_created"
+    ]
+  },
+  "servicenow": {
+    "instance_url": "${SERVICENOW_INSTANCE_URL}",
+    "username": "${SERVICENOW_USERNAME}",
+    "password": "${SERVICENOW_PASSWORD}",
+    "table": "incident",
+    "auto_create_incidents": true,
+    "default_category": "Software",
+    "default_subcategory": "Application",
+    "default_priority": "3",
+    "default_impact": "3",
+    "assignment_group": "IT Operations",
+    "incident_templates": {
+      "system_down": {
+        "short_description": "AutoSpec.AI System Outage",
+        "description": "AutoSpec.AI system is experiencing an outage.\n\nDetails: {details}\nImpact: {impact}\nTimestamp: {timestamp}",
+        "priority": "1",
+        "impact": "1",
+        "urgency": "1"
+      },
+      "processing_error": {
+        "short_description": "AutoSpec.AI Processing Error",
+        "description": "Document processing error in AutoSpec.AI.\n\nError: {error}\nDocument: {document}\nUser: {user}",
+        "priority": "3",
+        "impact": "2"
+      }
+    }
+  },
+  "salesforce": {
+    "instance_url": "${SALESFORCE_INSTANCE_URL}",
+    "client_id": "${SALESFORCE_CLIENT_ID}",
+    "client_secret": "${SALESFORCE_CLIENT_SECRET}",
+    "username": "${SALESFORCE_USERNAME}",
+    "password": "${SALESFORCE_PASSWORD}",
+    "security_token": "${SALESFORCE_SECURITY_TOKEN}",
+    "sandbox": false,
+    "api_version": "58.0",
+    "object_mappings": {
+      "organization": "Account",
+      "user": "Contact",
+      "document": "Document__c"
+    },
+    "auto_sync": true,
+    "sync_frequency": "daily"
+  }
+}

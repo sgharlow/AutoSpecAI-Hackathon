@@ -1,0 +1,10 @@
+# AI Comparison Lambda Dependencies (Lightweight)
+boto3>=1.34.0
+aws-lambda-powertools>=2.0.0
+# Heavy ML dependencies temporarily removed
+# langchain>=0.1.0
+# numpy>=1.24.0
+# scikit-learn>=1.3.0
+# nltk>=3.8.0
+# sentence-transformers>=2.2.0
+# transformers>=4.30.0

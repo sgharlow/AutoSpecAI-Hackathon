@@ -1,0 +1,57 @@
+{
+  "type": "OAuth_Microsoft",
+  "config": {
+    "provider_type": "Microsoft",
+    "client_id": "${OAUTH_CLIENT_ID}",
+    "client_secret": "${OAUTH_CLIENT_SECRET}",
+    "tenant_id": "${OAUTH_TENANT_ID}",
+    "authority": "https://login.microsoftonline.com/${OAUTH_TENANT_ID}",
+    "redirect_uri": "https://app.autospec.ai/auth/oauth/microsoft/callback",
+    "scopes": [
+      "openid",
+      "profile",
+      "email",
+      "User.Read",
+      "Group.Read.All"
+    ],
+    "response_type": "code",
+    "response_mode": "query",
+    "state": "random_state_string",
+    "prompt": "select_account"
+  },
+  "advanced_settings": {
+    "just_in_time_provisioning": true,
+    "auto_create_users": true,
+    "update_user_attributes": true,
+    "default_role": "user",
+    "attribute_mappings": {
+      "email": "mail",
+      "given_name": "givenName",
+      "family_name": "surname",
+      "display_name": "displayName",
+      "job_title": "jobTitle",
+      "department": "department",
+      "office_location": "officeLocation",
+      "mobile_phone": "mobilePhone"
+    },
+    "group_mappings": {
+      "AutoSpec Administrators": "admin",
+      "AutoSpec Power Users": "power_user",
+      "AutoSpec Users": "user"
+    },
+    "require_verified_email": true,
+    "session_timeout": 480,
+    "refresh_token_enabled": true,
+    "access_token_lifetime": 3600,
+    "refresh_token_lifetime": 86400
+  },
+  "security_settings": {
+    "require_pkce": true,
+    "validate_issuer": true,
+    "validate_audience": true,
+    "validate_lifetime": true,
+    "clock_skew": 300,
+    "require_https": true,
+    "validate_signature": true
+  }
+}

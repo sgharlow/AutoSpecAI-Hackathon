@@ -1,0 +1,38 @@
+{
+  "document_id": "doc_456789",
+  "user_id": "user_123456",
+  "content": "This section needs clarification on the authentication requirements. Can we add more detail about the OAuth 2.0 flow implementation?",
+  "annotation_data": {
+    "selection_start": 1245,
+    "selection_end": 1367,
+    "selected_text": "User authentication will be handled through OAuth 2.0",
+    "annotation_type": "question",
+    "position": {
+      "line": 45,
+      "column": 12
+    },
+    "style": {
+      "highlight_color": "#ffeb3b",
+      "border_color": "#ffc107",
+      "marker_type": "underline"
+    }
+  },
+  "metadata": {
+    "comment_type": "review",
+    "priority": "medium",
+    "tags": ["authentication", "oauth", "security"],
+    "category": "clarification",
+    "visibility": "all_users",
+    "notification_preferences": {
+      "notify_mentions": true,
+      "notify_replies": true,
+      "notify_resolution": true
+    },
+    "context": {
+      "section": "Authentication Requirements",
+      "subsection": "OAuth Integration",
+      "requirement_id": "REQ-AUTH-001",
+      "related_comments": []
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "autospec-ai-cdk",
+  "version": "1.0.0",
+  "description": "CDK infrastructure for AutoSpec AI",
+  "main": "app.js",
+  "scripts": {
+    "build": "echo \"No build step needed\"",
+    "watch": "cdk watch",
+    "test": "jest",
+    "cdk": "cdk",
+    "deploy": "cdk deploy",
+    "destroy": "cdk destroy",
+    "diff": "cdk diff",
+    "synth": "cdk synth"
+  },
+  "keywords": ["aws", "cdk", "serverless", "bedrock", "ai"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-cdk-lib": "^2.202.0",
+    "constructs": "^10.4.2"
+  },
+  "devDependencies": {
+    "aws-cdk": "^2.0.0"
+  }
+}

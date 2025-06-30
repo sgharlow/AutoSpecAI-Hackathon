@@ -1,0 +1,40 @@
+{
+  "campaign_name": "New Features Announcement",
+  "description": "Announce new AI processing features to user base",
+  "use_workflow": true,
+  "notifications": [
+    {
+      "template_id": "feature_announcement",
+      "channel": "email",
+      "recipient": "user1@company.com",
+      "variables": {
+        "user_name": "John Doe",
+        "account_type": "premium",
+        "feature_list": ["Advanced OCR", "Multi-language Support", "Enhanced Analytics"],
+        "beta_access": true
+      },
+      "priority": "normal",
+      "send_delay_minutes": 0
+    },
+    {
+      "template_id": "feature_announcement",
+      "channel": "email",
+      "recipient": "user2@company.com",
+      "variables": {
+        "user_name": "Jane Smith",
+        "account_type": "standard",
+        "feature_list": ["Enhanced Analytics"],
+        "beta_access": false
+      },
+      "priority": "normal",
+      "send_delay_minutes": 2
+    }
+  ],
+  "settings": {
+    "batch_size": 100,
+    "rate_limit_per_hour": 1000,
+    "retry_failed": true,
+    "track_engagement": true,
+    "suppress_duplicates": true
+  }
+}

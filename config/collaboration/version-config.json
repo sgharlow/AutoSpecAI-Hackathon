@@ -1,0 +1,48 @@
+{
+  "document_id": "doc_456789",
+  "user_id": "user_123456",
+  "content": "# AutoSpec.AI System Requirements Document\n\n## Version 2.1 - Updated Requirements\n\n### 1. Authentication Requirements\n\n#### 1.1 OAuth 2.0 Integration\n\nThe system SHALL implement OAuth 2.0 authentication with the following specifications:\n\n- **Authorization Code Flow**: Primary authentication mechanism for web applications\n- **Implicit Flow**: Deprecated, not to be used for security reasons\n- **Client Credentials Flow**: For service-to-service authentication\n- **PKCE Extension**: Required for mobile and single-page applications\n\n#### 1.2 Supported Identity Providers\n\n- Internal LDAP/Active Directory\n- Google Workspace\n- Microsoft Azure AD\n- Custom SAML 2.0 providers\n\n#### 1.3 Token Management\n\n- Access tokens: 1-hour expiration\n- Refresh tokens: 30-day expiration with rotation\n- JWT format with RS256 signing\n- Token revocation endpoint implementation\n\n#### 1.4 Security Considerations\n\n- Rate limiting: 5 failed attempts per minute per IP\n- Account lockout: 15 minutes after 5 failed attempts\n- Multi-factor authentication: Required for admin accounts\n- Session management: Secure cookie with HttpOnly and Secure flags\n\n### 2. Document Processing Requirements\n\n#### 2.1 Supported File Types\n\n- PDF documents (up to 50MB)\n- Microsoft Word (.docx) files\n- Plain text (.txt) files\n- Rich Text Format (.rtf) files\n\n#### 2.2 Processing Pipeline\n\n1. **Ingestion**: File upload validation and virus scanning\n2. **Parsing**: Content extraction and structure analysis\n3. **AI Processing**: Requirements analysis using Amazon Bedrock\n4. **Output Generation**: Multiple format support (Markdown, JSON, HTML, PDF)\n5. **Storage**: Encrypted storage in Amazon S3\n\n#### 2.3 Real-time Collaboration\n\n- WebSocket-based real-time updates\n- Operational transformation for conflict resolution\n- User presence tracking and cursor synchronization\n- Comment and annotation system\n- Version control with diff visualization\n\n### 3. Security and Compliance\n\n#### 3.1 Data Encryption\n\n- Encryption at rest: AES-256 for all stored data\n- Encryption in transit: TLS 1.3 for all communications\n- Key management: AWS KMS with automatic rotation\n\n#### 3.2 Compliance Frameworks\n\n- GDPR: Data subject rights implementation\n- SOX: Audit logging and financial controls\n- HIPAA: Healthcare data protection (optional module)\n- PCI DSS: Payment data security (if applicable)\n\n#### 3.3 Audit and Monitoring\n\n- Comprehensive audit logging for all user actions\n- Real-time security monitoring and alerting\n- Compliance violation detection and reporting\n- Data retention policies with automated cleanup\n\n### 4. API and Integration\n\n#### 4.1 REST API\n\n- OpenAPI 3.0 specification\n- Rate limiting: 1000 requests per hour per user\n- API versioning with backward compatibility\n- Comprehensive error handling and status codes\n\n#### 4.2 Webhook Support\n\n- Document processing status updates\n- User activity notifications\n- System health alerts\n- Custom integration endpoints\n\n#### 4.3 Third-party Integrations\n\n- Slack: Notifications and slash commands\n- Microsoft Teams: Channel notifications\n- Jira: Issue creation and tracking\n- GitHub: Repository integration\n- ServiceNow: Incident management\n\n### 5. Performance and Scalability\n\n#### 5.1 Performance Targets\n\n- Document processing: 95% under 30 seconds\n- API response time: 95% under 500ms\n- WebSocket latency: 95% under 100ms\n- System availability: 99.9% uptime SLA\n\n#### 5.2 Scalability Requirements\n\n- Support for 10,000 concurrent users\n- Processing capacity: 1,000 documents per hour\n- Storage: Unlimited with lifecycle management\n- Geographic distribution: Multi-region deployment\n\n### 6. User Experience\n\n#### 6.1 Web Interface\n\n- Responsive design for desktop and mobile\n- Progressive Web App (PWA) capabilities\n- Accessibility compliance (WCAG 2.1 AA)\n- Dark mode and theme customization\n\n#### 6.2 Mobile Applications\n\n- Native iOS and Android applications\n- Offline document viewing and commenting\n- Push notifications for collaboration events\n- Biometric authentication support\n\nThis document represents the current requirements as of version 2.1 and includes significant updates to the authentication system, security measures, and collaboration features.",
+  "change_description": "Updated authentication requirements with detailed OAuth 2.0 specifications, added security considerations, and expanded collaboration features section",
+  "is_auto_save": false,
+  "metadata": {
+    "version_type": "major",
+    "change_category": "enhancement",
+    "affected_sections": [
+      "authentication",
+      "security",
+      "collaboration",
+      "api"
+    ],
+    "review_status": "pending",
+    "change_impact": "medium",
+    "backwards_compatible": true,
+    "estimated_implementation_effort": "4 weeks",
+    "dependencies": [
+      "OAuth 2.0 provider setup",
+      "Security infrastructure updates",
+      "WebSocket implementation"
+    ]
+  },
+  "changes": [
+    {
+      "type": "addition",
+      "section": "Authentication Requirements",
+      "description": "Added detailed OAuth 2.0 flow specifications"
+    },
+    {
+      "type": "enhancement",
+      "section": "Security Considerations",
+      "description": "Expanded security requirements with specific implementation details"
+    },
+    {
+      "type": "addition",
+      "section": "Real-time Collaboration",
+      "description": "Added comprehensive collaboration feature requirements"
+    },
+    {
+      "type": "update",
+      "section": "Performance Targets",
+      "description": "Updated performance benchmarks and SLA requirements"
+    }
+  ]
+}

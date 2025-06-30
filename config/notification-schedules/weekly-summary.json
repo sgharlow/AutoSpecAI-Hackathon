@@ -1,0 +1,35 @@
+{
+  "name": "Weekly User Summary",
+  "description": "Weekly summary email for active users",
+  "type": "recurring",
+  "config": {
+    "interval": 1,
+    "unit": "weeks",
+    "day_of_week": "monday",
+    "time": "09:00"
+  },
+  "templateId": "weekly_summary",
+  "recipients": [
+    "{{dynamic_user_list}}"
+  ],
+  "channels": ["email"],
+  "variables": {
+    "week_range": "{{current_week}}",
+    "documents_processed": "{{user_documents_count}}",
+    "avg_quality_score": "{{user_avg_quality}}",
+    "top_document_types": "{{user_document_types}}",
+    "user_name": "{{recipient_name}}",
+    "recipient_email": "{{recipient_email}}"
+  },
+  "filters": {
+    "user_status": "active",
+    "last_activity_days": 30,
+    "email_preferences": "weekly_summary_enabled"
+  },
+  "metadata": {
+    "category": "engagement",
+    "priority": "medium",
+    "batch_processing": true
+  },
+  "createdBy": "system"
+}

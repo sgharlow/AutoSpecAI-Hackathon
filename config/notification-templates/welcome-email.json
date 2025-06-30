@@ -1,0 +1,34 @@
+{
+  "templateId": "welcome_email",
+  "type": "welcome",
+  "name": "Welcome Email Template",
+  "description": "Welcome email for new AutoSpec.AI users",
+  "channels": ["email"],
+  "content": {
+    "email": {
+      "subject": "Welcome to AutoSpec.AI, {{user_name}}! 🚀",
+      "html_body": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Welcome to AutoSpec.AI</title></head><body style=\"margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f8f9fa;\"><div style=\"max-width: 600px; margin: 0 auto; background-color: white;\"><div style=\"background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;\"><h1 style=\"color: white; margin: 0; font-size: 32px; font-weight: bold;\">AutoSpec.AI</h1><p style=\"color: white; margin: 10px 0 0 0; font-size: 18px;\">Intelligent Document Analysis</p></div><div style=\"padding: 40px 30px;\"><h2 style=\"color: #333; margin-top: 0; font-size: 24px;\">Welcome {{user_name}}! 👋</h2><p style=\"color: #555; line-height: 1.6; font-size: 16px;\">Thank you for joining AutoSpec.AI! We're excited to help you transform your documents into structured system requirements with the power of AI.</p><div style=\"background: #f8f9fa; padding: 25px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #28a745;\"><h3 style=\"color: #28a745; margin-top: 0; font-size: 18px;\">🎯 What you can do with AutoSpec.AI:</h3><ul style=\"color: #555; margin: 0; padding-left: 20px;\"><li style=\"margin: 8px 0;\"><strong>Upload Documents:</strong> PDF, DOCX, TXT files via email or API</li><li style=\"margin: 8px 0;\"><strong>AI Analysis:</strong> Advanced document processing with Claude 3 Sonnet</li><li style=\"margin: 8px 0;\"><strong>Structured Output:</strong> Get requirements in Markdown, JSON, HTML, or PDF</li><li style=\"margin: 8px 0;\"><strong>Real-time Tracking:</strong> Monitor processing status and quality scores</li></ul></div><div style=\"background: #e3f2fd; padding: 25px; border-radius: 8px; margin: 25px 0;\"><h3 style=\"color: #1976d2; margin-top: 0; font-size: 18px;\">🚀 Quick Start Guide:</h3><ol style=\"color: #555; margin: 0; padding-left: 20px;\"><li style=\"margin: 8px 0;\">Send your first document to <strong>{{upload_email}}</strong></li><li style=\"margin: 8px 0;\">Or use our API endpoint: <code style=\"background: #f5f5f5; padding: 2px 4px; border-radius: 3px;\">{{api_endpoint}}</code></li><li style=\"margin: 8px 0;\">Receive your processed requirements within minutes</li><li style=\"margin: 8px 0;\">Review quality scores and download results</li></ol></div><div style=\"text-align: center; margin: 35px 0;\"><a href=\"{{dashboard_url}}\" style=\"background: #007bff; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold; font-size: 16px;\">Access Your Dashboard</a></div><div style=\"background: #fff3cd; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #ffc107;\"><h4 style=\"color: #856404; margin-top: 0; font-size: 16px;\">💡 Pro Tips:</h4><ul style=\"color: #856404; margin: 0; padding-left: 20px; font-size: 14px;\"><li style=\"margin: 5px 0;\">Use clear, well-structured documents for best results</li><li style=\"margin: 5px 0;\">Include document context in your email subject</li><li style=\"margin: 5px 0;\">Check our API documentation for advanced features</li></ul></div><div style=\"text-align: center; margin: 30px 0;\"><h3 style=\"color: #333; font-size: 18px;\">Need Help?</h3><p style=\"color: #555; margin: 10px 0;\">Our team is here to support you!</p><a href=\"{{support_url}}\" style=\"color: #007bff; text-decoration: none; font-weight: bold;\">📧 Contact Support</a> | <a href=\"{{documentation_url}}\" style=\"color: #007bff; text-decoration: none; font-weight: bold;\">📚 Documentation</a> | <a href=\"{{api_docs_url}}\" style=\"color: #007bff; text-decoration: none; font-weight: bold;\">🔧 API Docs</a></div></div><div style=\"background: #343a40; padding: 30px; text-align: center;\"><p style=\"color: #adb5bd; margin: 0; font-size: 14px;\">This email was sent to {{recipient_email}}</p><p style=\"color: #6c757d; margin: 10px 0 0 0; font-size: 12px;\">© 2024 AutoSpec.AI. All rights reserved.</p><p style=\"color: #6c757d; margin: 5px 0 0 0; font-size: 12px;\"><a href=\"{{unsubscribe_url}}\" style=\"color: #6c757d;\">Unsubscribe</a> | <a href=\"{{privacy_url}}\" style=\"color: #6c757d;\">Privacy Policy</a></p></div></div></body></html>",
+      "text_body": "Welcome to AutoSpec.AI, {{user_name}}!\n\nThank you for joining AutoSpec.AI! We're excited to help you transform your documents into structured system requirements with the power of AI.\n\nWhat you can do with AutoSpec.AI:\n• Upload Documents: PDF, DOCX, TXT files via email or API\n• AI Analysis: Advanced document processing with Claude 3 Sonnet\n• Structured Output: Get requirements in Markdown, JSON, HTML, or PDF\n• Real-time Tracking: Monitor processing status and quality scores\n\nQuick Start Guide:\n1. Send your first document to {{upload_email}}\n2. Or use our API endpoint: {{api_endpoint}}\n3. Receive your processed requirements within minutes\n4. Review quality scores and download results\n\nAccess your dashboard: {{dashboard_url}}\n\nPro Tips:\n• Use clear, well-structured documents for best results\n• Include document context in your email subject\n• Check our API documentation for advanced features\n\nNeed Help?\nContact Support: {{support_url}}\nDocumentation: {{documentation_url}}\nAPI Docs: {{api_docs_url}}\n\nThis email was sent to {{recipient_email}}\n© 2024 AutoSpec.AI. All rights reserved.\nUnsubscribe: {{unsubscribe_url}} | Privacy Policy: {{privacy_url}}"
+    }
+  },
+  "variables": [
+    "user_name",
+    "recipient_email",
+    "upload_email",
+    "api_endpoint",
+    "dashboard_url",
+    "support_url",
+    "documentation_url",
+    "api_docs_url",
+    "unsubscribe_url",
+    "privacy_url"
+  ],
+  "isActive": true,
+  "createdBy": "system",
+  "tags": ["welcome", "onboarding", "email"],
+  "metadata": {
+    "category": "user_onboarding",
+    "priority": "high",
+    "frequency": "once_per_user"
+  }
+}

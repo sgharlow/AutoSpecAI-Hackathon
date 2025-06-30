@@ -1,0 +1,57 @@
+{
+  "name": "autospec-ai",
+  "version": "1.0.0",
+  "description": "AI-powered document to requirements analysis platform",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd infra/cdk && npm install && cd ../../frontend && npm install && cd ../testing && npm install",
+    "build": "cd frontend && npm run build",
+    "test": "cd testing && npm test",
+    "test:unit": "cd testing && npm run test:unit",
+    "test:integration": "cd testing && npm run test:integration",
+    "test:e2e": "cd testing && npm run test:e2e",
+    "test:coverage": "cd testing && npm run test:coverage",
+    "lint": "cd frontend && npm run lint && cd ../testing && npm run quality:lint",
+    "format": "cd frontend && npm run format && cd ../testing && npm run quality:format",
+    "cdk:synth": "cd infra/cdk && npm run synth",
+    "cdk:deploy": "cd infra/cdk && npm run deploy",
+    "deploy:dev": "./scripts/deploy.sh dev",
+    "deploy:staging": "./scripts/deploy.sh staging",
+    "deploy:prod": "./scripts/deploy.sh prod",
+    "precommit": "npm run lint && npm run test:unit",
+    "prepare": "npm run install:all"
+  },
+  "workspaces": [
+    "frontend",
+    "infra/cdk", 
+    "testing"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.0.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md,yml,yaml}": ["prettier --write"]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/AutoSpecAI.git"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "serverless",
+    "ai",
+    "bedrock",
+    "document-processing",
+    "requirements-analysis"
+  ],
+  "license": "ISC"
+}

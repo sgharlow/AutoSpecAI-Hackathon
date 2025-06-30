@@ -1,0 +1,91 @@
+{
+  "server": "${LDAP_HOST}",
+  "port": 636,
+  "use_ssl": true,
+  "username": "${LDAP_BIND_DN}",
+  "password": "${LDAP_BIND_PASSWORD}",
+  "base_dn": "${LDAP_BASE_DN}",
+  "user_search_base": "OU=Users,${LDAP_BASE_DN}",
+  "user_search_filter": "(&(objectClass=user)(!(objectClass=computer))(!(userAccountControl:1.2.840.113556.1.4.803:=2)))",
+  "user_id_attribute": "sAMAccountName",
+  "user_email_attribute": "mail",
+  "user_first_name_attribute": "givenName",
+  "user_last_name_attribute": "sn",
+  "user_display_name_attribute": "displayName",
+  "user_department_attribute": "department",
+  "user_title_attribute": "title",
+  "user_phone_attribute": "telephoneNumber",
+  "user_mobile_attribute": "mobile",
+  "group_search_base": "OU=Groups,${LDAP_BASE_DN}",
+  "group_search_filter": "(objectClass=group)",
+  "group_name_attribute": "cn",
+  "group_member_attribute": "member",
+  "sync_schedule": "0 */6 * * *",
+  "sync_settings": {
+    "auto_create_users": true,
+    "auto_update_users": true,
+    "auto_disable_users": false,
+    "delete_removed_users": false,
+    "sync_groups": true,
+    "sync_user_attributes": [
+      "email",
+      "givenName",
+      "sn",
+      "displayName",
+      "department",
+      "title",
+      "telephoneNumber",
+      "mobile"
+    ],
+    "excluded_users": [
+      "administrator",
+      "guest",
+      "krbtgt"
+    ],
+    "included_groups": [
+      "AutoSpec Users",
+      "Engineering",
+      "Product Team",
+      "Marketing",
+      "Sales"
+    ],
+    "excluded_groups": [
+      "Domain Admins",
+      "Enterprise Admins",
+      "Schema Admins"
+    ]
+  },
+  "role_mappings": {
+    "AutoSpec Administrators": "admin",
+    "AutoSpec Power Users": "power_user",
+    "Engineering": "engineer",
+    "Product Team": "product_manager",
+    "Marketing": "marketer",
+    "Sales": "sales_rep"
+  },
+  "department_mappings": {
+    "Information Technology": "IT",
+    "Research and Development": "Engineering",
+    "Human Resources": "HR",
+    "Customer Service": "Support"
+  },
+  "advanced_settings": {
+    "connection_timeout": 30,
+    "search_timeout": 60,
+    "page_size": 1000,
+    "referrals": false,
+    "ssl_verify": true,
+    "ssl_ca_cert_file": "/path/to/ca-cert.pem",
+    "bind_timeout": 10,
+    "search_scope": "SUBTREE",
+    "case_insensitive_login": true,
+    "nested_groups": true,
+    "max_nested_depth": 5
+  },
+  "logging": {
+    "log_level": "INFO",
+    "log_searches": true,
+    "log_binds": false,
+    "log_user_details": false
+  }
+}

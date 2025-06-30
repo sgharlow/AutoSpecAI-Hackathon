@@ -1,0 +1,131 @@
+{
+  "dev": {
+    "security": {
+      "self_signup_enabled": true,
+      "rate_limit": 1000,
+      "blocked_countries": ["CN", "RU", "KP", "IR"],
+      "waf_enabled": true,
+      "cognito_mfa_required": false,
+      "api_key_expiry_days": 90,
+      "session_timeout_minutes": 60,
+      "password_complexity": {
+        "min_length": 12,
+        "require_uppercase": true,
+        "require_lowercase": true,
+        "require_numbers": true,
+        "require_symbols": true
+      },
+      "encryption": {
+        "at_rest": "AES-256-GCM",
+        "in_transit": "TLS-1.3",
+        "key_rotation_days": 365
+      },
+      "audit_logging": {
+        "enabled": true,
+        "retention_days": 90,
+        "include_data_events": true
+      },
+      "threat_detection": {
+        "enabled": true,
+        "sensitivity": "medium",
+        "auto_response": false
+      }
+    },
+    "compliance": {
+      "gdpr_enabled": true,
+      "data_retention_days": 365,
+      "anonymization_enabled": true,
+      "consent_tracking": true
+    }
+  },
+  "staging": {
+    "security": {
+      "self_signup_enabled": false,
+      "rate_limit": 2000,
+      "blocked_countries": ["CN", "RU", "KP", "IR", "SY", "AF"],
+      "waf_enabled": true,
+      "cognito_mfa_required": true,
+      "api_key_expiry_days": 60,
+      "session_timeout_minutes": 30,
+      "password_complexity": {
+        "min_length": 14,
+        "require_uppercase": true,
+        "require_lowercase": true,
+        "require_numbers": true,
+        "require_symbols": true
+      },
+      "encryption": {
+        "at_rest": "AES-256-GCM",
+        "in_transit": "TLS-1.3",
+        "key_rotation_days": 180
+      },
+      "audit_logging": {
+        "enabled": true,
+        "retention_days": 180,
+        "include_data_events": true
+      },
+      "threat_detection": {
+        "enabled": true,
+        "sensitivity": "high",
+        "auto_response": true
+      }
+    },
+    "compliance": {
+      "gdpr_enabled": true,
+      "data_retention_days": 730,
+      "anonymization_enabled": true,
+      "consent_tracking": true
+    }
+  },
+  "prod": {
+    "security": {
+      "self_signup_enabled": false,
+      "rate_limit": 5000,
+      "blocked_countries": ["CN", "RU", "KP", "IR", "SY", "AF", "BY"],
+      "waf_enabled": true,
+      "cognito_mfa_required": true,
+      "api_key_expiry_days": 30,
+      "session_timeout_minutes": 15,
+      "password_complexity": {
+        "min_length": 16,
+        "require_uppercase": true,
+        "require_lowercase": true,
+        "require_numbers": true,
+        "require_symbols": true
+      },
+      "encryption": {
+        "at_rest": "AES-256-GCM",
+        "in_transit": "TLS-1.3",
+        "key_rotation_days": 90
+      },
+      "audit_logging": {
+        "enabled": true,
+        "retention_days": 2555,
+        "include_data_events": true
+      },
+      "threat_detection": {
+        "enabled": true,
+        "sensitivity": "high",
+        "auto_response": true,
+        "integration": {
+          "guardduty_enabled": true,
+          "security_hub_enabled": true,
+          "inspector_enabled": true
+        }
+      }
+    },
+    "compliance": {
+      "gdpr_enabled": true,
+      "hipaa_enabled": true,
+      "sox_enabled": true,
+      "data_retention_days": 2555,
+      "anonymization_enabled": true,
+      "consent_tracking": true,
+      "data_classification": {
+        "enabled": true,
+        "auto_tagging": true,
+        "dlp_enabled": true
+      }
+    }
+  }
+}

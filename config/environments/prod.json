@@ -1,0 +1,97 @@
+{
+  "environment": "prod",
+  "aws": {
+    "region": "us-east-1",
+    "account_pattern": "^[0-9]{12}$"
+  },
+  "application": {
+    "stack_name": "AutoSpecAI-prod",
+    "log_retention_days": 30,
+    "lambda_timeout_minutes": {
+      "ingest": 5,
+      "process": 15,
+      "format": 5,
+      "slack": 3,
+      "api": 1,
+      "monitoring": 5
+    },
+    "lambda_memory_mb": {
+      "ingest": 1024,
+      "process": 2048,
+      "format": 1536,
+      "slack": 512,
+      "api": 512,
+      "monitoring": 512
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "x_ray_tracing": true,
+    "detailed_monitoring": true,
+    "alarm_thresholds": {
+      "error_rate_percent": 5,
+      "processing_time_seconds": 300,
+      "low_throughput_requests": 1
+    },
+    "dashboard_refresh_seconds": 30
+  },
+  "features": {
+    "slack_integration": true,
+    "advanced_pdf_generation": true,
+    "email_notifications": true,
+    "api_authentication": true,
+    "rate_limiting": true,
+    "enhanced_security": true
+  },
+  "bedrock": {
+    "model_id": "anthropic.claude-3-5-sonnet-20241022-v2:0",
+    "max_tokens": 4000,
+    "temperature": 0.1,
+    "top_p": 0.9
+  },
+  "s3": {
+    "versioning": true,
+    "encryption": "KMS",
+    "lifecycle_policies": {
+      "transition_to_ia_days": 30,
+      "transition_to_glacier_days": 90,
+      "delete_after_days": 365
+    },
+    "access_logging": true
+  },
+  "dynamodb": {
+    "billing_mode": "PAY_PER_REQUEST",
+    "point_in_time_recovery": true,
+    "backup_retention_days": 35,
+    "deletion_protection": true
+  },
+  "api_gateway": {
+    "rate_limit": 100,
+    "burst_limit": 200,
+    "quota_per_day": 1000,
+    "cors_enabled": true,
+    "waf_enabled": true
+  },
+  "notifications": {
+    "slack_webhook_url": "CONFIGURE_SLACK_WEBHOOK_URL",
+    "notification_email": "your-notification-email@example.com",
+    "sns_topic_name": "AutoSpecAI-Alerts-prod",
+    "escalation_email": "your-escalation-email@example.com",
+    "ses_verified_domain": "autospec-ai.com",
+    "ses_from_email": "noreply@autospec-ai.com"
+  },
+  "testing": {
+    "integration_tests": true,
+    "load_testing": false,
+    "smoke_tests": true,
+    "security_tests": true,
+    "compliance_tests": true
+  },
+  "security": {
+    "vpc_enabled": false,
+    "kms_key_rotation": true,
+    "access_logging": true,
+    "data_encryption_at_rest": true,
+    "data_encryption_in_transit": true
+  }
+}

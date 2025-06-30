@@ -1,0 +1,187 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environment variables and sensitive files
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.env
+!*.env.example
+
+# Enterprise configuration files with secrets
+config/enterprise/third-party-integrations.json
+config/enterprise/ldap-config.json
+config/enterprise/sso-oauth-config.json
+config/enterprise/sso-saml-config.json
+!config/enterprise/*.json.example
+
+# Frontend environment files
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+!frontend/.env.*.example
+
+# API keys and secrets
+*api-keys.json
+*secrets.json
+*.pem
+*.key
+*.cert
+
+# AWS credentials
+.aws/
+aws-exports.js
+
+# Local configuration
+local-config.json
+local-settings.json
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Local development settings
+local_settings.py
+db.sqlite3
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# celery beat schedule file
+celerybeat-schedule
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+#nod modules
+node_modules/
+infra/
+advanced-processing/
+ai-comparison/
+*.zip
+lambdas/

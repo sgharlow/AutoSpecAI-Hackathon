@@ -1,0 +1,80 @@
+{
+  "environment": "staging",
+  "aws": {
+    "region": "us-east-1",
+    "account_pattern": "*"
+  },
+  "application": {
+    "stack_name": "AutoSpecAIStack-staging",
+    "log_retention_days": 14,
+    "lambda_timeout_minutes": {
+      "ingest": 5,
+      "process": 15,
+      "format": 5,
+      "slack": 3,
+      "api": 1,
+      "monitoring": 5
+    },
+    "lambda_memory_mb": {
+      "ingest": 512,
+      "process": 1024,
+      "format": 1024,
+      "slack": 512,
+      "api": 512,
+      "monitoring": 512
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "x_ray_tracing": true,
+    "detailed_monitoring": true,
+    "alarm_thresholds": {
+      "error_rate_percent": 10,
+      "processing_time_seconds": 600,
+      "low_throughput_requests": 1
+    },
+    "dashboard_refresh_seconds": 60
+  },
+  "features": {
+    "slack_integration": true,
+    "advanced_pdf_generation": true,
+    "email_notifications": true,
+    "api_authentication": true,
+    "rate_limiting": true
+  },
+  "bedrock": {
+    "model_id": "anthropic.claude-3-5-sonnet-20241022-v2:0",
+    "max_tokens": 4000,
+    "temperature": 0.1,
+    "top_p": 0.9
+  },
+  "s3": {
+    "versioning": true,
+    "encryption": "S3_MANAGED",
+    "lifecycle_policies": {
+      "delete_after_days": 90
+    }
+  },
+  "dynamodb": {
+    "billing_mode": "PAY_PER_REQUEST",
+    "point_in_time_recovery": true,
+    "backup_retention_days": 14
+  },
+  "api_gateway": {
+    "rate_limit": 500,
+    "burst_limit": 1000,
+    "quota_per_day": 5000,
+    "cors_enabled": true
+  },
+  "notifications": {
+    "slack_webhook_url": "",
+    "notification_email": "staging-alerts@autospec.ai",
+    "sns_topic_name": "AutoSpecAI-Alerts-staging"
+  },
+  "testing": {
+    "integration_tests": true,
+    "load_testing": true,
+    "smoke_tests": true,
+    "security_tests": true
+  }
+}

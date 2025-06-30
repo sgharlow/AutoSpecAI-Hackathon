@@ -1,0 +1,39 @@
+/**
+ * AutoSpec.AI Web UI Configuration Template
+ * 
+ * To use this configuration:
+ * 1. Copy this file to config.js
+ * 2. Replace all placeholder values with your actual values
+ * 3. Include config.js in your HTML file before app.js
+ * 
+ * Example in HTML:
+ * <script src="config.js"></script>
+ * <script src="assets/js/app.js"></script>
+ */
+
+window.AUTOSPEC_CONFIG = {
+    // API Gateway endpoint
+    API_URL: 'YOUR_API_GATEWAY_URL', // e.g., https://abc123.execute-api.us-east-1.amazonaws.com/prod
+    
+    // API Key for authentication
+    API_KEY: 'YOUR_API_KEY_HERE', // Your actual API key from API Gateway
+    
+    // API Version
+    API_VERSION: 'v1',
+    
+    // Application settings
+    APP_NAME: 'AutoSpec.AI',
+    APP_VERSION: '1.0.0',
+    
+    // Feature flags
+    ENABLE_DEBUG: false,
+    ENABLE_ANALYTICS: false,
+    
+    // Upload settings
+    MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
+    ALLOWED_FILE_TYPES: ['pdf', 'docx', 'doc', 'txt'],
+    
+    // Polling settings
+    STATUS_POLL_INTERVAL: 5000, // 5 seconds
+    MAX_POLL_ATTEMPTS: 60 // 5 minutes
+};

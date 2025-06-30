@@ -1,0 +1,84 @@
+{
+  "document_id": "doc_456789",
+  "workflow_id": "approval_workflow_v1",
+  "organization_id": "org_acme_corp",
+  "initiator_id": "user_123456",
+  "workflow_type": "document_approval",
+  "approvers": [
+    "user_234567",
+    "user_345678",
+    "user_456789"
+  ],
+  "approval_rules": {
+    "approval_type": "sequential",
+    "required_approvals": 2,
+    "timeout_hours": 72,
+    "auto_approve_after_timeout": false,
+    "allow_self_approval": false,
+    "require_comments": true
+  },
+  "workflow_steps": [
+    {
+      "step": 1,
+      "name": "Technical Review",
+      "description": "Technical accuracy and implementation feasibility review",
+      "assignees": ["user_234567"],
+      "required_approvals": 1,
+      "timeout_hours": 24,
+      "auto_escalate": true,
+      "escalation_targets": ["user_345678"]
+    },
+    {
+      "step": 2,
+      "name": "Business Review",
+      "description": "Business requirements and stakeholder alignment review",
+      "assignees": ["user_345678"],
+      "required_approvals": 1,
+      "timeout_hours": 24,
+      "auto_escalate": true,
+      "escalation_targets": ["user_456789"]
+    },
+    {
+      "step": 3,
+      "name": "Final Approval",
+      "description": "Final sign-off and publication approval",
+      "assignees": ["user_456789"],
+      "required_approvals": 1,
+      "timeout_hours": 24,
+      "auto_escalate": false
+    }
+  ],
+  "notifications": {
+    "notify_on_start": true,
+    "notify_on_approval": true,
+    "notify_on_rejection": true,
+    "notify_on_timeout": true,
+    "notify_on_completion": true,
+    "notification_channels": ["email", "slack", "in_app"],
+    "custom_messages": {
+      "start": "Document approval workflow has been initiated for: {document_title}",
+      "approval": "Your approval is required for document: {document_title}",
+      "completion": "Document approval workflow completed for: {document_title}"
+    }
+  },
+  "metadata": {
+    "document_title": "AutoSpec.AI System Requirements Document",
+    "document_type": "requirements",
+    "urgency": "normal",
+    "business_impact": "medium",
+    "compliance_requirements": ["SOX", "GDPR"],
+    "version": "2.1",
+    "change_summary": "Updated authentication requirements and added security considerations",
+    "estimated_review_time": 45,
+    "related_documents": [
+      "doc_security_guidelines",
+      "doc_architecture_overview"
+    ],
+    "stakeholders": [
+      "engineering_team",
+      "product_management",
+      "security_team",
+      "compliance_team"
+    ]
+  }
+}

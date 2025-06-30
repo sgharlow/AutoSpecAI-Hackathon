@@ -1,0 +1,43 @@
+{
+  "type": "SAML",
+  "config": {
+    "metadata_url": "https://acme.okta.com/app/exkabcd1234567890/sso/saml/metadata",
+    "sso_url": "https://acme.okta.com/app/acme_autospecai_1/exkabcd1234567890/sso/saml",
+    "slo_url": "https://acme.okta.com/app/acme_autospecai_1/exkabcd1234567890/slo/saml",
+    "certificate": "-----BEGIN CERTIFICATE-----\nMIIDXTCCAkWgAwIBAgIJAKoK/heBjcOuMA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNV\n[Certificate content would go here]\n-----END CERTIFICATE-----",
+    "attribute_mappings": {
+      "email": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+      "given_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname",
+      "family_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname",
+      "organization": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/organization",
+      "department": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/department",
+      "role": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/role",
+      "groups": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/groups"
+    },
+    "signing_certificate": "-----BEGIN CERTIFICATE-----\n[Signing certificate]\n-----END CERTIFICATE-----",
+    "encryption_certificate": "-----BEGIN CERTIFICATE-----\n[Encryption certificate]\n-----END CERTIFICATE-----",
+    "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+    "force_authn": false,
+    "sign_requests": true,
+    "want_assertions_signed": true,
+    "want_response_signed": true
+  },
+  "advanced_settings": {
+    "just_in_time_provisioning": true,
+    "default_role": "user",
+    "role_mapping": {
+      "AutoSpec_Admin": "admin",
+      "AutoSpec_PowerUser": "power_user",
+      "AutoSpec_User": "user"
+    },
+    "department_mapping": {
+      "Engineering": "engineering",
+      "Product": "product",
+      "Marketing": "marketing",
+      "Sales": "sales"
+    },
+    "auto_create_users": true,
+    "update_user_attributes": true,
+    "session_timeout": 480
+  }
+}
