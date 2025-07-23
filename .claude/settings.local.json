@@ -46,11 +46,9 @@
       "Bash(--query 'Items[].{RequestId:requestId.S,Filename:filename.S,Status:status.S,Timestamp:timestamp.S}' )",
       "Bash(--output table)",
       "Bash(AWS_CA_BUNDLE=\"\" aws dynamodb describe-table )",
-      "Bash(--table-name autospec-ai-history )",
       "Bash(--query 'Table.{TableName:TableName,KeySchema:KeySchema,AttributeDefinitions:AttributeDefinitions,TableStatus:TableStatus}' )",
       "Bash(--output json)",
       "Bash(AWS_CA_BUNDLE=\"\" aws dynamodb put-item )",
-      "Bash(--table-name autospec-ai-history )",
       "Bash(--item '{\n    \"\"requestId\"\": {\"\"S\"\": \"\"manual-test-123\"\"},\n    \"\"timestamp\"\": {\"\"S\"\": \"\"2025-06-26T04:30:00Z\"\"},\n    \"\"senderEmail\"\": {\"\"S\"\": \"\"test@example.com\"\"},\n    \"\"sourceType\"\": {\"\"S\"\": \"\"manual\"\"},\n    \"\"filename\"\": {\"\"S\"\": \"\"test.txt\"\"},\n    \"\"fileType\"\": {\"\"S\"\": \"\"txt\"\"},\n    \"\"s3Key\"\": {\"\"S\"\": \"\"uploads/manual-test-123/test.txt\"\"},\n    \"\"fileSize\"\": {\"\"N\"\": \"\"100\"\"},\n    \"\"status\"\": {\"\"S\"\": \"\"uploaded\"\"},\n    \"\"processingStage\"\": {\"\"S\"\": \"\"ingestion_complete\"\"}\n  }')",
       "Bash(npm run deploy:*)",
       "Bash(--function-name \"AutoSpecAIStack-dev-IngestFunction\" )",
@@ -104,7 +102,8 @@
       "Bash(npm cache clean:*)",
       "Bash(npm config set:*)",
       "Bash(pkill:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(pdflatex:*)"
     ],
     "deny": []
   }
